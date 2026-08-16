@@ -1,0 +1,59 @@
+KodeMK,NamaMataKuliah,SKS,Semester,Jenis
+MKU101,Agama,2,1,Wajib
+MKU103,Bahasa Indonesia,2,1,Wajib
+MKU105,Wawasan Kewirausahaan,2,1,Wajib
+SIF101,Fondasi Pemrograman dan Struktur Data,3,1,Wajib
+SIF103,Pemrograman Visual berbasis Obyek,3,1,Wajib
+SIF105,Konsep Sistem Informasi,2,1,Wajib
+SIF107,Aljabar Linier,3,1,Wajib
+SIF109,Pengantar Teknologi Informasi,2,1,Wajib
+MKU102,Pancasila dan Kewarganegaraan,3,2,Wajib
+MKU104,Pembangunan Berkelanjutan,2,2,Wajib
+MKU106,Dasar Logika Matematika,2,2,Wajib
+SIF102,Sistem Basis Data,3,2,Wajib
+SIF104,Matematika Diskrit,2,2,Wajib
+SIF106,Perancangan dan Pemrograman Web,3,2,Wajib
+SIF108,Interaksi Manusia Komputer,3,2,Wajib
+MKU201,English for Specific Purposes,2,3,Wajib
+SIF201,Konsep dan Perancangan Basis Data,3,3,Wajib
+SIF203,Rekayasa Perangkat Lunak,3,3,Wajib
+SIF205,Pemrograman Aplikasi Bergerak,3,3,Wajib
+SIF207,Pengolahan Informasi berbasis Pemrograman Script,3,3,Wajib
+SIF209,Jaringan Komputer,2,3,Wajib
+SIF202,Analisis Proses Bisnis,3,4,Wajib
+SIF204,Proyek Pengembangan Perangkat Lunak,3,4,Wajib
+SIF206,Pengujian dan Penjaminan Kualitas Perangkat Lunak,3,4,Wajib
+SIF208,Statistika dan Probabilitas,3,4,Wajib
+SIF210,Manajemen dan Kepemimpinan,3,4,Wajib
+SIF212,UI/UX Design,3,4,Wajib
+SIF301,Analisis dan Perancangan Sistem,3,5,Wajib
+SIF303,Keamanan Jaringan Sistem Informasi,3,5,Wajib
+SIF305,Tata Kelola Teknologi Informasi,2,5,Wajib
+SIF307,Data Warehouse,3,5,Wajib
+SIF309,Sistem Informasi Manajemen,3,5,Wajib
+SIF302,E-Commerce,2,6,Wajib
+SIF304,Business Intelligence dan Visualisasi Data,3,6,Wajib
+SIF306,Manajemen Proyek Sistem Informasi,3,6,Wajib
+SIF308,Audit Sistem Informasi,3,6,Wajib
+SIF310,Transformasi Digital Pada Perusahaan dan Masyarakat Urban,2,6,Wajib
+SIF312,Etika dan Professional,2,6,Wajib
+SIF314,Metode Penelitian dan Penulisan Ilmiah,4,6,Wajib
+SIF501,Sistem Basis Data Lanjut,3,Pilihan,Pilihan
+SIF502,Computer Based Learning,3,Pilihan,Pilihan
+SIF503,Enterprise Resources Planning,3,Pilihan,Pilihan
+SIF504,Customer Relationship Management,3,Pilihan,Pilihan
+SIF505,Perencanaan Strategi Sistem Informasi,3,Pilihan,Pilihan
+SIF506,Manajemen Pengetahuan,3,Pilihan,Pilihan
+SIF507,Pemrograman Web Lanjut,3,Pilihan,Pilihan
+SIF508,Sistem Informasi Akuntansi dan Keuangan,3,Pilihan,Pilihan
+SIF509,Sistem Informasi Infografik,3,Pilihan,Pilihan
+SIF510,Analisis Jejaring Sosial,3,Pilihan,Pilihan
+SIF511,Pemrograman Perangkat Bergerak Lanjut,3,Pilihan,Pilihan
+SIF512,Machine Learning,3,Pilihan,Pilihan
+SIF513,Blockchain,3,Pilihan,Pilihan
+SIF514,Pemrograman IoT,3,Pilihan,Pilihan
+SIF515,Financial Technology,3,Pilihan,Pilihan
+SIF516,Teknik Aplikasi Multimedia,3,Pilihan,Pilihan
+SIF517,Studi Mandiri,3,Pilihan,Pilihan
+SIF518,Enterprise Application Management,3,Pilihan,Pilihan
+SIF519,Technopreneur,3,Pilihan,Pilihan
