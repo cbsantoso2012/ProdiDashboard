@@ -3,39 +3,50 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Executive Dashboard Kaprodi - Transkrip Sistem Informasi</title>
+<title>Dashboard Prodi Sistem Informasi</title>
 <style>
 :root{--navy:#0a2540;--blue:#0b63ce;--cyan:#13b8d4;--sky:#eaf7ff;--bg:#f4f8fc;--card:#fff;--text:#183047;--muted:#718096;--line:#dbe7f0;--green:#18a66a;--amber:#e9a317;--red:#dc4c4c;--shadow:0 12px 28px rgba(10,37,64,.08)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:linear-gradient(135deg,#f8fbff,#eef8ff 55%,#f6fcff)}
 button,input,select{font:inherit}.app{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--navy),#0b4f8a 58%,#0c759c);color:white;padding:16px 24px;box-shadow:0 4px 18px rgba(10,37,64,.17)}
 .toprow{display:flex;justify-content:space-between;gap:18px;align-items:center}.brand h1{font-size:20px;margin:0}.brand p{margin:4px 0 0;font-size:12px;opacity:.82}.actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:700}.btn.light{background:#fff;color:var(--blue)}.btn.ghost{background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.2)}.status{display:flex;align-items:center;gap:7px;font-size:12px;background:rgba(255,255,255,.12);padding:7px 10px;border-radius:999px}.dot{width:8px;height:8px;border-radius:50%;background:#ffd166}.dot.live{background:#52e0a2}.dot.err{background:#ff7878}
-.wrap{max-width:1500px;margin:auto;padding:20px}.filters{display:grid;grid-template-columns:1fr 1.4fr auto;gap:12px;background:#fff;padding:14px;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:16px}.field label{display:block;font-size:11px;color:var(--muted);font-weight:800;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}.field select,.field input{width:100%;border:1px solid #cfe0ec;border-radius:9px;padding:10px 11px;background:#fbfdff;color:var(--text)}.filtermeta{display:flex;align-items:end;font-size:12px;color:var(--muted);padding-bottom:10px}
-.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue)}.kpi.good:before{background:var(--green)}.kpi.warn:before{background:var(--amber)}.kpi.bad:before{background:var(--red)}.kpi .label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase}.kpi .value{font-size:28px;font-weight:800;margin-top:4px}.kpi .sub{font-size:11px;color:var(--muted);margin-top:3px}
+.wrap{max-width:1500px;margin:auto;padding:20px}.filters{display:grid;grid-template-columns:.8fr 1fr 1fr 1.35fr auto;gap:12px;background:#fff;padding:14px;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:16px}.field label{display:block;font-size:11px;color:var(--muted);font-weight:800;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}.field select,.field input{width:100%;border:1px solid #cfe0ec;border-radius:9px;padding:10px 11px;background:#fbfdff;color:var(--text)}.field select:disabled{background:#eef2f6;color:#9aa8b4;cursor:not-allowed}.field select.required{border-color:#dc4c4c;box-shadow:0 0 0 2px rgba(220,76,76,.08)}.filtermeta{display:flex;align-items:end;font-size:12px;color:var(--muted);padding-bottom:10px}
+.kpis{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue)}.kpi.good:before{background:var(--green)}.kpi.warn:before{background:var(--amber)}.kpi.bad:before{background:var(--red)}.kpi .label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase}.kpi .value{font-size:28px;font-weight:800;margin-top:4px}.kpi .sub{font-size:11px;color:var(--muted);margin-top:3px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}.panel.full{grid-column:1/-1}.panelhead{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbfdff)}.panelhead h2{font-size:15px;margin:0}.panelhead .meta{font-size:11px;color:var(--muted)}.linkbtn{border:0;background:#eaf4ff;color:var(--blue);font-weight:800;border-radius:8px;padding:7px 10px;cursor:pointer}.tablewrap{overflow:auto}.tbl{width:100%;border-collapse:collapse;min-width:620px}.tbl th{background:#f3f8fc;color:#5f7488;font-size:10px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);position:sticky;top:0}.tbl td{font-size:12px;padding:10px 12px;border-bottom:1px solid #edf2f6}.tbl tr:hover td{background:#f8fcff}.nim{color:var(--blue);font-weight:800;cursor:pointer;text-decoration:none}.badge{display:inline-block;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800}.b-green{background:#e4f8ee;color:#0c7f4d}.b-amber{background:#fff4d9;color:#9f6c00}.b-red{background:#ffe8e8;color:#a72828}.b-blue{background:#e8f3ff;color:#145ea8}.empty{padding:28px;text-align:center;color:var(--muted);font-size:12px}.footnote{padding:9px 16px;color:var(--muted);font-size:10px;border-top:1px solid var(--line);background:#fbfdff}
 .modal{display:none;position:fixed;inset:0;background:rgba(5,22,38,.62);z-index:100;padding:22px;align-items:center;justify-content:center}.modal.show{display:flex}.modalbox{background:white;border-radius:16px;width:min(1150px,96vw);max-height:88vh;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.28)}.modalhead{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.modalhead h3{margin:0;font-size:16px}.close{background:#edf3f7;border:0;border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:900}.modalbody{padding:14px 18px;overflow:auto;max-height:74vh}.detailmeta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.pill{background:#eff6fb;border:1px solid #d9e7f0;border-radius:999px;padding:6px 9px;font-size:11px}.grade{font-weight:900}.grade.D,.grade.E{color:var(--red)}.grade.A{color:var(--green)}
 .alert{padding:10px 12px;margin-bottom:14px;border-radius:10px;font-size:12px;background:#fff8df;border:1px solid #f2df9a;color:#795f00;display:none}.alert.show{display:block}
-@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}@media(max-width:780px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.toprow{align-items:flex-start;flex-direction:column}.wrap{padding:12px}.panel.full{grid-column:auto}}@media(max-width:480px){.kpis{grid-template-columns:1fr 1fr}.kpi .value{font-size:22px}}
+@media(max-width:1250px){.kpis{grid-template-columns:repeat(4,1fr)}}@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}@media(max-width:780px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.toprow{align-items:flex-start;flex-direction:column}.wrap{padding:12px}.panel.full{grid-column:auto}}@media(max-width:480px){.kpis{grid-template-columns:1fr 1fr}.kpi .value{font-size:22px}}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="topbar"><div class="toprow"><div class="brand"><h1>Executive Dashboard Kaprodi — Transkrip Sistem Informasi</h1><p>Monitoring kelulusan, SKS, nilai kritis, dan mapping mata kuliah • Data live Google Sheet</p></div><div class="actions"><span class="status"><span id="statusDot" class="dot"></span><span id="statusText">Memuat data...</span></span><button class="btn ghost" id="syncBtn">↻ Sync Now</button><button class="btn light" id="openSheetBtn">Open Google Sheet</button></div></div></header>
+<header class="topbar"><div class="toprow"><div class="brand"><h1>Dashboard Prodi Sistem Informasi</h1><p>Monitoring kelulusan, SKS, nilai kritis, dan mapping mata kuliah • Data live Google Sheet</p></div><div class="actions"><span class="status"><span id="statusDot" class="dot"></span><span id="statusText">Memuat data...</span></span><button class="btn ghost" id="syncBtn">↻ Sync Now</button><button class="btn light" id="openSheetBtn">Open Google Sheet</button></div></div></header>
 <main class="wrap">
 <div id="alertBox" class="alert"></div>
-<section class="filters"><div class="field"><label>Tahun Masuk (4 digit awal NIM)</label><select id="yearFilter"><option value="">Semua Tahun</option></select></div><div class="field"><label>Filter NIM / Nama</label><input id="nimFilter" placeholder="Contoh: 2024... atau nama mahasiswa" /></div><div class="filtermeta" id="filterMeta">-</div></section>
+<section class="filters">
+<div class="field"><label>Cakupan Data</label><select id="scopeFilter"><option value="all">All</option><option value="active">Aktif</option></select></div>
+<div class="field"><label>Periode / Posting MasaStudi</label><select id="periodFilter" disabled><option value="">Pilih Periode</option></select></div>
+<div class="field"><label>Tahun Masuk (4 digit awal NIM)</label><select id="yearFilter"><option value="">Semua Tahun</option></select></div>
+<div class="field"><label>Filter NIM / Nama</label><input id="nimFilter" placeholder="Contoh: 2024... atau nama mahasiswa" /></div>
+<div class="filtermeta" id="filterMeta">-</div>
+</section>
 <section class="kpis">
-<div class="kpi"><div class="label">Mahasiswa</div><div class="value" id="kpiStudents">0</div><div class="sub">sesuai filter aktif</div></div>
+<div class="kpi"><div class="label">Mahasiswa</div><div class="value" id="kpiStudents">0</div><div class="sub">sesuai filter global</div></div>
+<div class="kpi"><div class="label">Mhs Periode</div><div class="value" id="kpiPeriod">-</div><div class="sub">NIM pada MasaStudi</div></div>
 <div class="kpi good"><div class="label">Kandidat Cumlaude</div><div class="value" id="kpiCumlaude">0</div><div class="sub">semua nilai minimal B</div></div>
 <div class="kpi warn"><div class="label">SKS &lt; 144</div><div class="value" id="kpiSks">0</div><div class="sub">perlu monitoring kelulusan</div></div>
 <div class="kpi bad"><div class="label">Ada Nilai D</div><div class="value" id="kpiD">0</div><div class="sub">mahasiswa terdampak</div></div>
 <div class="kpi bad"><div class="label">Ada Nilai E</div><div class="value" id="kpiE">0</div><div class="sub">mahasiswa terdampak</div></div>
 <div class="kpi warn"><div class="label">MK Belum Mapping</div><div class="value" id="kpiMap">0</div><div class="sub">judul MK unik</div></div>
+<div class="kpi bad"><div class="label">MK Nilai Jelek</div><div class="value" id="kpiBadCourses">0</div><div class="sub">MK memiliki D/E</div></div>
 </section>
 <section class="grid">
+<div class="panel"><div class="panelhead"><div><h2>Mahasiswa dengan IPK Tertinggi</h2><div class="meta">Top 5 berdasarkan IPK • mengikuti seluruh filter dashboard</div></div><button class="linkbtn" data-list="topipk">Lihat Semua</button></div><div id="topIpkTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat seluruh detail transkrip nilai mahasiswa.</div></div>
 <div class="panel"><div class="panelhead"><div><h2>Daftar Mahasiswa Cumlaude</h2><div class="meta">Nilai mata kuliah minimal B • urut IPK tertinggi</div></div><button class="linkbtn" data-list="cumlaude">Lihat Semua</button></div><div id="cumlaudeTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat seluruh detail transkrip.</div></div>
 <div class="panel"><div class="panelhead"><div><h2>Mahasiswa Kurang dari 144 SKS</h2><div class="meta">Prioritas berdasarkan kekurangan SKS terbesar</div></div><button class="linkbtn" data-list="sks">Lihat Semua</button></div><div id="sksTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat seluruh detail transkrip.</div></div>
 <div class="panel"><div class="panelhead"><div><h2>Mahasiswa dengan Nilai E</h2><div class="meta">Daftar mahasiswa yang masih memiliki nilai E</div></div><button class="linkbtn" data-list="E">Lihat Semua</button></div><div id="eTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat hanya mata kuliah bernilai E.</div></div>
 <div class="panel"><div class="panelhead"><div><h2>Mahasiswa dengan Nilai D</h2><div class="meta">Daftar mahasiswa yang masih memiliki nilai D</div></div><button class="linkbtn" data-list="D">Lihat Semua</button></div><div id="dTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat hanya mata kuliah bernilai D.</div></div>
+<div class="panel full"><div class="panelhead"><div><h2>Daftar Mahasiswa Periode Terpilih</h2><div class="meta">Semua status pada sheet MasaStudi • dibatasi oleh Posting yang dipilih</div></div><button class="linkbtn" data-list="period">Lihat Semua</button></div><div id="periodTable" class="tablewrap"></div><div class="footnote">Panel aktif saat Cakupan Data = Aktif dan Periode dipilih. Klik NIM untuk melihat detail transkrip.</div></div>
+<div class="panel full"><div class="panelhead"><div><h2>Mata Kuliah dengan Nilai Jelek Terbanyak</h2><div class="meta">Nilai jelek = D atau E • ranking berdasarkan jumlah mahasiswa terdampak</div></div><button class="linkbtn" data-list="badcourses">Lihat Semua</button></div><div id="badCoursesTable" class="tablewrap"></div><div class="footnote">Klik nama mata kuliah untuk melihat mahasiswa dengan nilai D/E pada mata kuliah tersebut.</div></div>
 <div class="panel full"><div class="panelhead"><div><h2>Mata Kuliah Belum Memiliki Mapping Kode</h2><div class="meta">Dibandingkan dengan sheet Mapping • mahasiswa pada filter yang SKS-nya &lt; 144</div></div><button class="linkbtn" data-list="mapping">Lihat Semua</button></div><div id="mappingTable" class="tablewrap"></div><div class="footnote">Mapping dilakukan berdasarkan nama mata kuliah Indonesia (bagian sebelum tanda “/”), tanpa membedakan huruf besar/kecil dan variasi spasi.</div></div>
 </section>
 </main></div>
@@ -43,42 +54,374 @@ button,input,select{font:inherit}.app{min-height:100vh}.topbar{position:sticky;t
 <script src="config.js"></script>
 <script src="data_fallback.js"></script>
 <script src="mapping_fallback.js"></script>
+<script src="masa_studi_fallback.js"></script>
 <script>
+
 const CFG=window.KAPRODI_DASHBOARD_CONFIG;
-let state={students:[],details:[],mapping:[],mode:'loading',lastSync:null};
+let state={students:[],details:[],mapping:[],masa:[],mode:'loading',lastSync:null};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-function parseCSV(txt){const rows=[];let row=[],v='',q=false;for(let i=0;i<txt.length;i++){const c=txt[i],n=txt[i+1];if(c==='"'){if(q&&n==='"'){v+='"';i++;}else q=!q;}else if(c===','&&!q){row.push(v);v='';}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(v);if(row.some(x=>x!==''))rows.push(row);row=[];v='';}else v+=c;}row.push(v);if(row.some(x=>x!==''))rows.push(row);return rows;}
-function rowsToObjects(rows){if(!rows.length)return[];const h=rows[0].map(x=>x.trim());return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]??'').trim()]))).filter(o=>Object.values(o).some(Boolean));}
-async function fetchSheet(sheet){const u=`https://docs.google.com/spreadsheets/d/${CFG.GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}&_=${Date.now()}`;const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error(`${sheet}: HTTP ${r.status}`);const txt=await r.text();if(/<!doctype html|<html/i.test(txt))throw new Error(`${sheet}: akses publik belum tersedia`);return rowsToObjects(parseCSV(txt));}
-function key(o,names){for(const n of names){if(Object.prototype.hasOwnProperty.call(o,n)&&o[n]!==''&&o[n]!=null)return o[n];}const nk=Object.keys(o);for(const n of names){const hit=nk.find(k=>normKey(k)===normKey(n));if(hit&&o[hit]!==''&&o[hit]!=null)return o[hit];}return '';}
 const normKey=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
-function normalizeStudents(rows){return rows.map(o=>({nim:String(key(o,['NIM','Nim'])),name:key(o,['Nama','Name']),sks:+key(o,['Total SKS','SKS Lulus','SKS','TotalSKS'])||0,ipk:+key(o,['IPK','Ipk'])||0,raw:o})).filter(x=>x.nim);}
-function normalizeDetails(rows){return rows.map(o=>({nim:String(key(o,['NIM','Nim'])),name:key(o,['Nama','Name']),no:+key(o,['No','Nomor'])||0,course:key(o,['Mata Kuliah / Course Title','Mata Kuliah','Nama Mata Kuliah','NamaMataKuliah']),sks:+key(o,['SKS','K/C'])||0,grade:String(key(o,['Nilai','HM/G','Grade'])).trim().toUpperCase(),raw:o})).filter(x=>x.nim&&x.course);}
-function normalizeMapping(rows){return rows.map(o=>({code:key(o,['KodeMK','Kode MK','Kode']),course:key(o,['NamaMataKuliah','Nama Mata Kuliah','Mata Kuliah']),sks:+key(o,['SKS'])||0,semester:key(o,['Semester']),type:key(o,['Jenis','Type'])})).filter(x=>x.course);}
-function canonicalCourse(s){return String(s||'').split('/')[0].trim().toLowerCase().replace(/\(.*?\)/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();}
-function loadFallbackImmediately(){const snap=window.KAPRODI_FALLBACK_DATA||{students:[],details:[]};state.students=normalizeStudents(snap.students||[]);state.details=normalizeDetails(snap.details||[]);state.mapping=normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);state.mode='fallback';state.lastSync=new Date();setStatus('error',`Snapshot lokal • ${state.students.length} mahasiswa`);showAlert('Data snapshot langsung ditampilkan. Dashboard sedang mencoba sinkronisasi ke Google Sheet di belakang layar.');populateYears();render();}
-async function loadData(){setStatus('loading','Sinkronisasi Google Sheet...');let warning='';try{const [s,d]=await Promise.all([fetchSheet(CFG.SHEETS.STUDENTS),fetchSheet(CFG.SHEETS.DETAILS)]);const liveStudents=normalizeStudents(s),liveDetails=normalizeDetails(d);if(!liveStudents.length||!liveDetails.length)throw new Error('DataMahasiswa/Detilnilai kosong atau header kolom tidak dikenali');state.students=liveStudents;state.details=liveDetails;try{const liveMap=normalizeMapping(await fetchSheet(CFG.SHEETS.MAPPING));state.mapping=liveMap.length?liveMap:normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);if(!liveMap.length)warning=`Sheet “${CFG.SHEETS.MAPPING}” kosong/belum terbaca. Sementara memakai mapping bawaan dashboard.`;}catch(e){state.mapping=normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);warning=`Sheet “${CFG.SHEETS.MAPPING}” belum dapat dibaca. Sementara memakai mapping bawaan dashboard.`;}state.mode='live';setStatus('live',`Live • ${state.students.length} mahasiswa`);}catch(e){console.warn(e);const snap=window.KAPRODI_FALLBACK_DATA||{students:[],details:[]};state.students=normalizeStudents(snap.students||[]);state.details=normalizeDetails(snap.details||[]);state.mapping=normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);state.mode='fallback';warning='Google Sheet belum dapat dibaca dari mode file://. Data snapshot 61 mahasiswa tetap ditampilkan. Untuk data live, jalankan melalui GitHub Pages/localhost dan pastikan Google Sheet dapat dilihat oleh “Anyone with the link”.';setStatus('error',`Snapshot lokal • ${state.students.length} mahasiswa`);}state.lastSync=new Date();showAlert(warning);populateYears();render();}
+const fmtIPK=v=>Number.isFinite(+v)?(+v).toFixed(2):'-';
+
+function parseCSV(txt){
+  const rows=[];let row=[],v='',q=false;
+  for(let i=0;i<txt.length;i++){
+    const c=txt[i],n=txt[i+1];
+    if(c==='"'){if(q&&n==='"'){v+='"';i++;}else q=!q;}
+    else if(c===','&&!q){row.push(v);v='';}
+    else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(v);if(row.some(x=>x!==''))rows.push(row);row=[];v='';}
+    else v+=c;
+  }
+  row.push(v);if(row.some(x=>x!==''))rows.push(row);return rows;
+}
+function rowsToObjects(rows){
+  if(!rows.length)return[];
+  const h=rows[0].map(x=>x.trim());
+  return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]??'').trim()]))).filter(o=>Object.values(o).some(Boolean));
+}
+async function fetchSheet(sheet){
+  const u=`https://docs.google.com/spreadsheets/d/${CFG.GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}&_=${Date.now()}`;
+  const r=await fetch(u,{cache:'no-store'});
+  if(!r.ok)throw new Error(`${sheet}: HTTP ${r.status}`);
+  const txt=await r.text();
+  if(/<!doctype html|<html/i.test(txt))throw new Error(`${sheet}: akses publik belum tersedia`);
+  return rowsToObjects(parseCSV(txt));
+}
+function key(o,names){
+  for(const n of names){if(Object.prototype.hasOwnProperty.call(o,n)&&o[n]!==''&&o[n]!=null)return o[n];}
+  const nk=Object.keys(o);
+  for(const n of names){const hit=nk.find(k=>normKey(k)===normKey(n));if(hit&&o[hit]!==''&&o[hit]!=null)return o[hit];}
+  return '';
+}
+function normalizeStudents(rows){
+  return rows.map(o=>({
+    nim:String(key(o,['NIM','Nim'])),
+    name:key(o,['Nama','Name']),
+    sks:+key(o,['Total SKS','SKS Lulus','SKS','TotalSKS'])||0,
+    ipk:+key(o,['IPK','Ipk'])||0,
+    raw:o
+  })).filter(x=>x.nim);
+}
+function normalizeDetails(rows){
+  return rows.map(o=>({
+    nim:String(key(o,['NIM','Nim'])),
+    name:key(o,['Nama','Name']),
+    no:+key(o,['No','Nomor'])||0,
+    course:key(o,['Mata Kuliah / Course Title','Mata Kuliah','Nama Mata Kuliah','NamaMataKuliah']),
+    sks:+key(o,['SKS','K/C'])||0,
+    grade:String(key(o,['Nilai','HM/G','Grade'])).trim().toUpperCase(),
+    raw:o
+  })).filter(x=>x.nim&&x.course);
+}
+function normalizeMapping(rows){
+  return rows.map(o=>({
+    code:key(o,['KodeMK','Kode MK','Kode']),
+    course:key(o,['NamaMataKuliah','Nama Mata Kuliah','Mata Kuliah']),
+    sks:+key(o,['SKS'])||0,
+    semester:key(o,['Semester']),
+    type:key(o,['Jenis','Type'])
+  })).filter(x=>x.course);
+}
+function normalizeMasa(rows){
+  return rows.map(o=>({
+    posting:String(key(o,['Posting'])).trim(),
+    nim:String(key(o,['NIM','Nim'])).trim(),
+    name:key(o,['Nama','Name']),
+    statusMahasiswa:key(o,['Status Mahasiswa']),
+    statusSemester:key(o,['Status Semester']),
+    periodeMasuk:key(o,['Periode Masuk']),
+    periodeTerakhir:key(o,['Periode Terakhir']),
+    tanggalMasuk:key(o,['Tanggal Masuk']),
+    tanggalKeluar:key(o,['Tanggal Keluar']),
+    semester:+key(o,['Semester'])||0,
+    ipk:+key(o,['IPK','Ipk'])||0,
+    masaStudi:key(o,['Masa Studi']),
+    raw:o
+  })).filter(x=>x.nim&&x.posting);
+}
+function canonicalCourse(s){
+  return String(s||'').split('/')[0].trim().toLowerCase().replace(/\(.*?\)/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+}
 function setStatus(mode,text){$('#statusText').textContent=text;$('#statusDot').className='dot '+(mode==='live'?'live':mode==='error'?'err':'');}
 function showAlert(msg){const a=$('#alertBox');a.textContent=msg||'';a.classList.toggle('show',!!msg);}
-function populateYears(){const sel=$('#yearFilter'),cur=sel.value;const years=[...new Set(state.students.map(s=>s.nim.slice(0,4)).filter(x=>/^\d{4}$/.test(x)))].sort();sel.innerHTML='<option value="">Semua Tahun</option>'+years.map(y=>`<option>${esc(y)}</option>`).join('');sel.value=years.includes(cur)?cur:'';}
-function filteredStudents(){const y=$('#yearFilter').value,q=$('#nimFilter').value.trim().toLowerCase();return state.students.filter(s=>(!y||s.nim.startsWith(y))&&(!q||s.nim.toLowerCase().includes(q)||String(s.name).toLowerCase().includes(q)));}
+
+function loadFallbackImmediately(){
+  const snap=window.KAPRODI_FALLBACK_DATA||{students:[],details:[]};
+  state.students=normalizeStudents(snap.students||[]);
+  state.details=normalizeDetails(snap.details||[]);
+  state.mapping=normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);
+  state.masa=normalizeMasa(window.KAPRODI_MASA_STUDI_FALLBACK||[]);
+  state.mode='fallback';state.lastSync=new Date();
+  setStatus('error',`Snapshot lokal • ${state.students.length} mahasiswa`);
+  showAlert('Snapshot lokal ditampilkan. Dashboard sedang mencoba sinkronisasi ke Google Sheet di belakang layar.');
+  populatePeriods();populateYears();updateScopeUI();render();
+}
+async function loadData(){
+  setStatus('loading','Sinkronisasi Google Sheet...');
+  let warnings=[];
+  try{
+    const [s,d]=await Promise.all([fetchSheet(CFG.SHEETS.STUDENTS),fetchSheet(CFG.SHEETS.DETAILS)]);
+    const liveStudents=normalizeStudents(s),liveDetails=normalizeDetails(d);
+    if(!liveStudents.length)throw new Error('DataMahasiswa kosong atau header tidak dikenali');
+    state.students=liveStudents;
+    state.details=liveDetails;
+
+    try{
+      const liveMap=normalizeMapping(await fetchSheet(CFG.SHEETS.MAPPING));
+      state.mapping=liveMap.length?liveMap:normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);
+      if(!liveMap.length)warnings.push(`Sheet “${CFG.SHEETS.MAPPING}” kosong; mapping bawaan dipakai.`);
+    }catch(e){
+      state.mapping=normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);
+      warnings.push(`Sheet “${CFG.SHEETS.MAPPING}” belum terbaca; mapping bawaan dipakai.`);
+    }
+
+    try{
+      const liveMasa=normalizeMasa(await fetchSheet(CFG.SHEETS.MASA_STUDI));
+      state.masa=liveMasa.length?liveMasa:normalizeMasa(window.KAPRODI_MASA_STUDI_FALLBACK||[]);
+      if(!liveMasa.length)warnings.push(`Sheet “${CFG.SHEETS.MASA_STUDI}” kosong; snapshot MasaStudi dipakai.`);
+    }catch(e){
+      state.masa=normalizeMasa(window.KAPRODI_MASA_STUDI_FALLBACK||[]);
+      warnings.push(`Sheet “${CFG.SHEETS.MASA_STUDI}” belum terbaca; snapshot MasaStudi dipakai.`);
+    }
+
+    state.mode='live';
+    setStatus('live',`Live • ${state.students.length} mahasiswa`);
+  }catch(e){
+    console.warn(e);
+    const snap=window.KAPRODI_FALLBACK_DATA||{students:[],details:[]};
+    state.students=normalizeStudents(snap.students||[]);
+    state.details=normalizeDetails(snap.details||[]);
+    state.mapping=normalizeMapping(window.KAPRODI_MAPPING_FALLBACK||[]);
+    state.masa=normalizeMasa(window.KAPRODI_MASA_STUDI_FALLBACK||[]);
+    state.mode='fallback';
+    warnings.push('Google Sheet belum dapat dibaca. Snapshot lokal ditampilkan. Untuk data live gunakan GitHub Pages dan pastikan Google Sheet dapat dilihat oleh “Anyone with the link”.');
+    setStatus('error',`Snapshot lokal • ${state.students.length} mahasiswa`);
+  }
+  state.lastSync=new Date();
+  showAlert(warnings.join(' '));
+  populatePeriods();populateYears();updateScopeUI();render();
+}
+
+function populatePeriods(){
+  const sel=$('#periodFilter'),cur=sel.value;
+  const postings=[...new Set(state.masa.map(x=>x.posting).filter(Boolean))].sort().reverse();
+  sel.innerHTML='<option value="">Pilih Periode</option>'+postings.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  sel.value=postings.includes(cur)?cur:'';
+}
+function populateYears(){
+  const sel=$('#yearFilter'),cur=sel.value;
+  const years=[...new Set(state.students.map(s=>s.nim.slice(0,4)).filter(x=>/^\d{4}$/.test(x)))].sort();
+  sel.innerHTML='<option value="">Semua Tahun</option>'+years.map(y=>`<option value="${esc(y)}">${esc(y)}</option>`).join('');
+  sel.value=years.includes(cur)?cur:'';
+}
+function updateScopeUI(){
+  const active=$('#scopeFilter').value==='active';
+  const p=$('#periodFilter');
+  p.disabled=!active;
+  p.classList.toggle('required',active&&!p.value);
+}
+function globalFilterContext(){
+  const scope=$('#scopeFilter').value;
+  const period=$('#periodFilter').value;
+  const y=$('#yearFilter').value;
+  const q=$('#nimFilter').value.trim().toLowerCase();
+
+  let masaRows=[];
+  let allowedIds=null;
+  if(scope==='active'){
+    if(!period)return {scope,period,y,q,masaRows:[],allowedIds:new Set(),periodRequired:true};
+    masaRows=state.masa.filter(x=>x.posting===period);
+    allowedIds=new Set(masaRows.map(x=>x.nim));
+  }
+
+  const students=state.students.filter(s=>
+    (allowedIds===null||allowedIds.has(s.nim)) &&
+    (!y||s.nim.startsWith(y)) &&
+    (!q||s.nim.toLowerCase().includes(q)||String(s.name).toLowerCase().includes(q))
+  );
+
+  if(scope==='active'){
+    masaRows=masaRows.filter(x=>
+      (!y||x.nim.startsWith(y)) &&
+      (!q||x.nim.toLowerCase().includes(q)||String(x.name).toLowerCase().includes(q))
+    );
+  }
+  return {scope,period,y,q,students,masaRows,allowedIds,periodRequired:false};
+}
+function filteredStudents(){return globalFilterContext().students||[];}
 function detailsFor(nim){return state.details.filter(d=>d.nim===String(nim));}
-function metrics(){const ss=filteredStudents(),ids=new Set(ss.map(s=>s.nim)),ds=state.details.filter(d=>ids.has(d.nim));const by=Object.groupBy?Object.groupBy(ds,x=>x.nim):ds.reduce((a,x)=>((a[x.nim]??=[]).push(x),a),{});const cum=ss.filter(s=>{const a=by[s.nim]||[];return a.length&&a.every(x=>['A','A-','B+','B'].includes(x.grade));}).sort((a,b)=>b.ipk-a.ipk||a.name.localeCompare(b.name));const under=ss.filter(s=>s.sks<CFG.TARGET_SKS).map(s=>({...s,gap:CFG.TARGET_SKS-s.sks})).sort((a,b)=>b.gap-a.gap||a.nim.localeCompare(b.nim));const gradeList=g=>ss.filter(s=>(by[s.nim]||[]).some(x=>x.grade===g)).map(s=>({...s,count:(by[s.nim]||[]).filter(x=>x.grade===g).length})).sort((a,b)=>b.count-a.count||a.nim.localeCompare(b.nim));const D=gradeList('D'),E=gradeList('E');const mapped=new Set(state.mapping.map(m=>canonicalCourse(m.course)));const underIds=new Set(under.map(s=>s.nim));const unmappedRaw=ds.filter(d=>underIds.has(d.nim)&&(!mapped.size||!mapped.has(canonicalCourse(d.course))));const um={};unmappedRaw.forEach(d=>{const k=canonicalCourse(d.course);if(!um[k])um[k]={course:d.course.split('/')[0].trim(),students:new Set(),sks:new Set(),rows:[]};um[k].students.add(d.nim);um[k].sks.add(d.sks);um[k].rows.push(d);});const unmapped=Object.values(um).map(x=>({...x,count:x.students.size,sksText:[...x.sks].sort().join(', ')})).sort((a,b)=>b.count-a.count||a.course.localeCompare(b.course));return{ss,ds,cum,under,D,E,unmapped};}
-function tableHTML(headers,rows){if(!rows.length)return'<div class="empty">Tidak ada data pada filter ini.</div>';return`<table class="tbl"><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;}
-function render(){const m=metrics(),limit=CFG.TOP_LIMIT;$('#kpiStudents').textContent=m.ss.length;$('#kpiCumlaude').textContent=m.cum.length;$('#kpiSks').textContent=m.under.length;$('#kpiD').textContent=m.D.length;$('#kpiE').textContent=m.E.length;$('#kpiMap').textContent=m.unmapped.length;$('#filterMeta').textContent=`${m.ss.length} mahasiswa • sync ${state.lastSync?state.lastSync.toLocaleTimeString('id-ID'): '-'}`;
-$('#cumlaudeTable').innerHTML=tableHTML(['NIM','Nama','IPK','Status'],m.cum.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${s.ipk.toFixed(2)}</b></td><td><span class="badge b-green">Min. B</span></td></tr>`));
-$('#sksTable').innerHTML=tableHTML(['NIM','Nama','SKS','Kurang'],m.under.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${s.sks}</b></td><td><span class="badge b-amber">${s.gap} SKS</span></td></tr>`));
-$('#eTable').innerHTML=tableHTML(['NIM','Nama','Jumlah E','IPK'],m.E.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="E">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${s.ipk.toFixed(2)}</td></tr>`));
-$('#dTable').innerHTML=tableHTML(['NIM','Nama','Jumlah D','IPK'],m.D.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="D">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${s.ipk.toFixed(2)}</td></tr>`));
-$('#mappingTable').innerHTML=tableHTML(['Mata Kuliah','SKS','Mahasiswa Terdampak','Status'],m.unmapped.slice(0,limit).map((x,i)=>`<tr><td><a class="nim" data-course="${esc(canonicalCourse(x.course))}">${esc(x.course)}</a></td><td>${esc(x.sksText)}</td><td><b>${x.count}</b></td><td><span class="badge b-amber">Belum Mapping</span></td></tr>`));bindDrill();}
-function bindDrill(){document.querySelectorAll('[data-nim]').forEach(a=>a.onclick=()=>showTranscript(a.dataset.nim,a.dataset.grade));document.querySelectorAll('[data-course]').forEach(a=>a.onclick=()=>showCourse(a.dataset.course));}
+
+function metrics(){
+  const ctx=globalFilterContext();
+  const ss=ctx.students||[];
+  const ids=new Set(ss.map(s=>s.nim));
+  const ds=state.details.filter(d=>ids.has(d.nim));
+  const by=ds.reduce((a,x)=>((a[x.nim]??=[]).push(x),a),{});
+
+  const topIPK=ss.filter(s=>Number.isFinite(+s.ipk)&&+s.ipk>0)
+    .slice().sort((a,b)=>b.ipk-a.ipk||a.name.localeCompare(b.name)||a.nim.localeCompare(b.nim));
+
+  const cum=ss.filter(s=>{
+    const a=by[s.nim]||[];
+    return a.length&&a.every(x=>['A','A-','B+','B'].includes(x.grade));
+  }).sort((a,b)=>b.ipk-a.ipk||a.name.localeCompare(b.name));
+
+  const under=ss.filter(s=>s.sks<CFG.TARGET_SKS)
+    .map(s=>({...s,gap:CFG.TARGET_SKS-s.sks}))
+    .sort((a,b)=>b.gap-a.gap||a.nim.localeCompare(b.nim));
+
+  const gradeList=g=>ss.filter(s=>(by[s.nim]||[]).some(x=>x.grade===g))
+    .map(s=>({...s,count:(by[s.nim]||[]).filter(x=>x.grade===g).length}))
+    .sort((a,b)=>b.count-a.count||a.nim.localeCompare(b.nim));
+  const D=gradeList('D'),E=gradeList('E');
+
+  const mapped=new Set(state.mapping.map(m=>canonicalCourse(m.course)));
+  const underIds=new Set(under.map(s=>s.nim));
+  const unmappedRaw=ds.filter(d=>underIds.has(d.nim)&&(!mapped.size||!mapped.has(canonicalCourse(d.course))));
+  const um={};
+  unmappedRaw.forEach(d=>{
+    const k=canonicalCourse(d.course);
+    if(!um[k])um[k]={course:d.course.split('/')[0].trim(),students:new Set(),sks:new Set(),rows:[]};
+    um[k].students.add(d.nim);um[k].sks.add(d.sks);um[k].rows.push(d);
+  });
+  const unmapped=Object.values(um).map(x=>({...x,count:x.students.size,sksText:[...x.sks].sort().join(', ')}))
+    .sort((a,b)=>b.count-a.count||a.course.localeCompare(b.course));
+
+  const badRaw=ds.filter(d=>CFG.BAD_GRADES.includes(d.grade));
+  const bc={};
+  badRaw.forEach(d=>{
+    const k=canonicalCourse(d.course);
+    if(!bc[k])bc[k]={course:d.course.split('/')[0].trim(),rows:[],students:new Set(),D:new Set(),E:new Set()};
+    bc[k].rows.push(d);bc[k].students.add(d.nim);
+    if(d.grade==='D')bc[k].D.add(d.nim);
+    if(d.grade==='E')bc[k].E.add(d.nim);
+  });
+  const badCourses=Object.values(bc).map(x=>({
+    ...x,
+    count:x.students.size,
+    dCount:x.D.size,
+    eCount:x.E.size,
+    pct:ss.length?100*x.students.size/ss.length:0
+  })).sort((a,b)=>b.count-a.count||b.eCount-a.eCount||b.dCount-a.dCount||a.course.localeCompare(b.course));
+
+  return {ctx,ss,ds,topIPK,cum,under,D,E,unmapped,badCourses,periodRows:ctx.masaRows||[]};
+}
+function tableHTML(headers,rows,emptyText='Tidak ada data pada filter ini.'){
+  if(!rows.length)return`<div class="empty">${esc(emptyText)}</div>`;
+  return`<table class="tbl"><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+}
+function render(){
+  updateScopeUI();
+  const m=metrics(),limit=CFG.TOP_LIMIT;
+  $('#kpiStudents').textContent=m.ss.length;
+  $('#kpiPeriod').textContent=m.ctx.scope==='active'?(m.ctx.period?m.periodRows.length:'-'):'All';
+  $('#kpiCumlaude').textContent=m.cum.length;
+  $('#kpiSks').textContent=m.under.length;
+  $('#kpiD').textContent=m.D.length;
+  $('#kpiE').textContent=m.E.length;
+  $('#kpiMap').textContent=m.unmapped.length;
+  $('#kpiBadCourses').textContent=m.badCourses.length;
+
+  const scopeText=m.ctx.scope==='active'?(m.ctx.period?`Aktif • ${m.ctx.period}`:'Aktif • pilih Periode'):'All';
+  $('#filterMeta').textContent=`${scopeText} • ${m.ss.length} mahasiswa • sync ${state.lastSync?state.lastSync.toLocaleTimeString('id-ID'):'-'}`;
+
+  $('#topIpkTable').innerHTML=tableHTML(['Peringkat','NIM','Nama','IPK'],m.topIPK.slice(0,limit).map((s,i)=>`<tr><td><span class="badge b-blue">#${i+1}</span></td><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td></tr>`));
+  $('#cumlaudeTable').innerHTML=tableHTML(['NIM','Nama','IPK','Status'],m.cum.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td><td><span class="badge b-green">Min. B</span></td></tr>`));
+  $('#sksTable').innerHTML=tableHTML(['NIM','Nama','SKS','Kurang'],m.under.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${s.sks}</b></td><td><span class="badge b-amber">${s.gap} SKS</span></td></tr>`));
+  $('#eTable').innerHTML=tableHTML(['NIM','Nama','Jumlah E','IPK'],m.E.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="E">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${fmtIPK(s.ipk)}</td></tr>`));
+  $('#dTable').innerHTML=tableHTML(['NIM','Nama','Jumlah D','IPK'],m.D.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="D">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${fmtIPK(s.ipk)}</td></tr>`));
+
+  const periodEmpty=m.ctx.scope!=='active'?'Pilih Cakupan Data = Aktif untuk menggunakan filter MasaStudi.':(!m.ctx.period?'Pilih Periode / Posting terlebih dahulu.':'Tidak ada data MasaStudi pada periode ini.');
+  $('#periodTable').innerHTML=tableHTML(
+    ['NIM','Nama','Status Mhs','Status Semester','Semester','IPK','Masa Studi'],
+    m.periodRows.slice(0,limit).map(x=>`<tr><td><a class="nim" data-nim="${esc(x.nim)}" data-grade="ALL">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><span class="badge b-blue">${esc(x.statusMahasiswa||'-')}</span></td><td>${esc(x.statusSemester||'-')}</td><td>${x.semester||'-'}</td><td>${fmtIPK(x.ipk)}</td><td>${esc(x.masaStudi||'-')}</td></tr>`),
+    periodEmpty
+  );
+
+  $('#badCoursesTable').innerHTML=tableHTML(
+    ['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],
+    m.badCourses.slice(0,limit).map(x=>`<tr><td><a class="nim" data-bad-course="${esc(canonicalCourse(x.course))}">${esc(x.course)}</a></td><td><b>${x.count}</b></td><td><span class="badge b-red">${x.dCount}</span></td><td><span class="badge b-red">${x.eCount}</span></td><td>${x.pct.toFixed(1)}%</td></tr>`)
+  );
+
+  $('#mappingTable').innerHTML=tableHTML(['Mata Kuliah','SKS','Mahasiswa Terdampak','Status'],m.unmapped.slice(0,limit).map(x=>`<tr><td><a class="nim" data-course="${esc(canonicalCourse(x.course))}">${esc(x.course)}</a></td><td>${esc(x.sksText)}</td><td><b>${x.count}</b></td><td><span class="badge b-amber">Belum Mapping</span></td></tr>`));
+  bindDrill();
+}
+function bindDrill(){
+  document.querySelectorAll('[data-nim]').forEach(a=>a.onclick=()=>showTranscript(a.dataset.nim,a.dataset.grade||'ALL'));
+  document.querySelectorAll('[data-course]').forEach(a=>a.onclick=()=>showCourse(a.dataset.course));
+  document.querySelectorAll('[data-bad-course]').forEach(a=>a.onclick=()=>showBadCourse(a.dataset.badCourse));
+}
 function showModal(title,html){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modal').classList.add('show');}
-function showTranscript(nim,grade='ALL'){const s=state.students.find(x=>x.nim===nim)||{nim,name:'',sks:0,ipk:0};let ds=detailsFor(nim).sort((a,b)=>a.no-b.no);if(grade!=='ALL')ds=ds.filter(x=>x.grade===grade);const meta=`<div class="detailmeta"><span class="pill"><b>NIM:</b> ${esc(s.nim)}</span><span class="pill"><b>Nama:</b> ${esc(s.name)}</span><span class="pill"><b>SKS:</b> ${s.sks}</span><span class="pill"><b>IPK:</b> ${s.ipk.toFixed(2)}</span>${grade!=='ALL'?`<span class="pill"><b>Filter Nilai:</b> ${grade}</span>`:''}</div>`;const rows=ds.map(x=>`<tr><td>${x.no||''}</td><td>${esc(x.course)}</td><td>${x.sks}</td><td><span class="grade ${esc(x.grade)}">${esc(x.grade)}</span></td></tr>`);showModal(`Detail Transkrip — ${s.name}`,meta+tableHTML(['No','Mata Kuliah','SKS','Nilai'],rows));}
-function showList(type){const m=metrics();if(type==='cumlaude')showModal('Semua Kandidat Cumlaude',tableHTML(['NIM','Nama','IPK','Status'],m.cum.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.ipk.toFixed(2)}</td><td><span class="badge b-green">Min. B</span></td></tr>`)));else if(type==='sks')showModal('Semua Mahasiswa Kurang dari 144 SKS',tableHTML(['NIM','Nama','SKS','Kekurangan'],m.under.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.sks}</td><td>${s.gap}</td></tr>`)));else if(type==='D'||type==='E'){const arr=type==='D'?m.D:m.E;showModal(`Semua Mahasiswa dengan Nilai ${type}`,tableHTML(['NIM','Nama',`Jumlah ${type}`,'IPK'],arr.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','${type}')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.count}</td><td>${s.ipk.toFixed(2)}</td></tr>`)));}else if(type==='mapping')showModal('Semua Mata Kuliah Belum Mapping',tableHTML(['Mata Kuliah','SKS','Mahasiswa Terdampak','Status'],m.unmapped.map(x=>`<tr><td><a class="nim" onclick="showCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${esc(x.sksText)}</td><td>${x.count}</td><td><span class="badge b-amber">Belum Mapping</span></td></tr>`)));}
-function showCourse(key){const m=metrics(),x=m.unmapped.find(y=>canonicalCourse(y.course)===key);if(!x)return;const studentMap=new Map(m.ss.map(s=>[s.nim,s]));const uniq=[...new Map(x.rows.map(r=>[r.nim,r])).values()].map(r=>{const s=studentMap.get(r.nim);return`<tr><td><a class="nim" onclick="showTranscript('${esc(r.nim)}','ALL')">${esc(r.nim)}</a></td><td>${esc(r.name)}</td><td>${r.sks}</td><td>${s?s.sks:''}</td></tr>`;});showModal(`Belum Mapping — ${x.course}`,tableHTML(['NIM','Nama','SKS MK','Total SKS Mhs'],uniq));}
-$('#yearFilter').addEventListener('change',render);$('#nimFilter').addEventListener('input',render);$('#syncBtn').onclick=loadData;$('#openSheetBtn').onclick=()=>window.open(CFG.GOOGLE_SHEET_URL,'_blank');document.querySelectorAll('[data-list]').forEach(b=>b.onclick=()=>showList(b.dataset.list));$('#modalClose').onclick=()=>$('#modal').classList.remove('show');$('#modal').onclick=e=>{if(e.target===$('#modal'))$('#modal').classList.remove('show');};document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#modal').classList.remove('show');});
-loadFallbackImmediately();setTimeout(loadData,150);setInterval(()=>{if(document.visibilityState==='visible')loadData();},CFG.AUTO_SYNC_MS);
+function showTranscript(nim,grade='ALL'){
+  const s=state.students.find(x=>x.nim===nim);
+  const mr=state.masa.find(x=>x.nim===nim&&($('#periodFilter').value?x.posting===$('#periodFilter').value:true));
+  const base=s||{nim,name:mr?.name||'',sks:0,ipk:mr?.ipk||0};
+  let ds=detailsFor(nim).sort((a,b)=>a.no-b.no);
+  if(grade!=='ALL')ds=ds.filter(x=>x.grade===grade);
+  const meta=`<div class="detailmeta">
+    <span class="pill"><b>NIM:</b> ${esc(base.nim)}</span>
+    <span class="pill"><b>Nama:</b> ${esc(base.name)}</span>
+    <span class="pill"><b>SKS:</b> ${base.sks||0}</span>
+    <span class="pill"><b>IPK:</b> ${fmtIPK(base.ipk)}</span>
+    ${mr?`<span class="pill"><b>Status:</b> ${esc(mr.statusMahasiswa||'-')}</span><span class="pill"><b>Semester:</b> ${mr.semester||'-'}</span>`:''}
+    ${grade!=='ALL'?`<span class="pill"><b>Filter Nilai:</b> ${esc(grade)}</span>`:''}
+  </div>`;
+  const rows=ds.map(x=>`<tr><td>${x.no||''}</td><td>${esc(x.course)}</td><td>${x.sks}</td><td><span class="grade ${esc(x.grade)}">${esc(x.grade)}</span></td></tr>`);
+  showModal(`Detail Transkrip — ${base.name||nim}`,meta+tableHTML(['No','Mata Kuliah','SKS','Nilai'],rows,'Detail transkrip belum tersedia di sheet Detilnilai.'));
+}
+function showList(type){
+  const m=metrics();
+  if(type==='topipk'){
+    showModal('Daftar Mahasiswa dengan IPK Tertinggi',tableHTML(['Peringkat','NIM','Nama','IPK'],m.topIPK.map((s,i)=>`<tr><td><b>#${i+1}</b></td><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td></tr>`)));
+  }else if(type==='cumlaude'){
+    showModal('Semua Kandidat Cumlaude',tableHTML(['NIM','Nama','IPK','Status'],m.cum.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${fmtIPK(s.ipk)}</td><td><span class="badge b-green">Min. B</span></td></tr>`)));
+  }else if(type==='sks'){
+    showModal('Semua Mahasiswa Kurang dari 144 SKS',tableHTML(['NIM','Nama','SKS','Kekurangan'],m.under.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.sks}</td><td>${s.gap}</td></tr>`)));
+  }else if(type==='D'||type==='E'){
+    const arr=type==='D'?m.D:m.E;
+    showModal(`Semua Mahasiswa dengan Nilai ${type}`,tableHTML(['NIM','Nama',`Jumlah ${type}`,'IPK'],arr.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','${type}')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.count}</td><td>${fmtIPK(s.ipk)}</td></tr>`)));
+  }else if(type==='mapping'){
+    showModal('Semua Mata Kuliah Belum Mapping',tableHTML(['Mata Kuliah','SKS','Mahasiswa Terdampak','Status'],m.unmapped.map(x=>`<tr><td><a class="nim" onclick="showCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${esc(x.sksText)}</td><td>${x.count}</td><td><span class="badge b-amber">Belum Mapping</span></td></tr>`)));
+  }else if(type==='period'){
+    const msg=m.ctx.scope!=='active'?'Pilih Cakupan Data = Aktif terlebih dahulu.':(!m.ctx.period?'Pilih Periode / Posting terlebih dahulu.':'Tidak ada data.');
+    showModal('Semua Mahasiswa Periode Terpilih',tableHTML(['NIM','Nama','Status Mhs','Status Semester','Semester','IPK','Masa Studi'],m.periodRows.map(x=>`<tr><td><a class="nim" onclick="showTranscript('${esc(x.nim)}','ALL')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td>${esc(x.statusMahasiswa||'-')}</td><td>${esc(x.statusSemester||'-')}</td><td>${x.semester||'-'}</td><td>${fmtIPK(x.ipk)}</td><td>${esc(x.masaStudi||'-')}</td></tr>`),msg));
+  }else if(type==='badcourses'){
+    showModal('Semua Mata Kuliah dengan Nilai D/E',tableHTML(['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],m.badCourses.map(x=>`<tr><td><a class="nim" onclick="showBadCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${x.count}</td><td>${x.dCount}</td><td>${x.eCount}</td><td>${x.pct.toFixed(1)}%</td></tr>`)));
+  }
+}
+function showCourse(key){
+  const m=metrics(),x=m.unmapped.find(y=>canonicalCourse(y.course)===key);
+  if(!x)return;
+  const studentMap=new Map(m.ss.map(s=>[s.nim,s]));
+  const uniq=[...new Map(x.rows.map(r=>[r.nim,r])).values()].map(r=>{
+    const s=studentMap.get(r.nim);
+    return`<tr><td><a class="nim" onclick="showTranscript('${esc(r.nim)}','ALL')">${esc(r.nim)}</a></td><td>${esc(r.name)}</td><td>${r.sks}</td><td>${s?s.sks:''}</td></tr>`;
+  });
+  showModal(`Belum Mapping — ${x.course}`,tableHTML(['NIM','Nama','SKS MK','Total SKS Mhs'],uniq));
+}
+function showBadCourse(key){
+  const m=metrics(),x=m.badCourses.find(y=>canonicalCourse(y.course)===key);
+  if(!x)return;
+  const rows=x.rows.slice().sort((a,b)=>a.grade.localeCompare(b.grade)||a.nim.localeCompare(b.nim)).map(r=>`<tr><td><a class="nim" onclick="showTranscript('${esc(r.nim)}','ALL')">${esc(r.nim)}</a></td><td>${esc(r.name)}</td><td><span class="grade ${esc(r.grade)}">${esc(r.grade)}</span></td><td>${r.sks}</td></tr>`);
+  showModal(`Nilai D/E — ${x.course}`,tableHTML(['NIM','Nama','Nilai','SKS'],rows));
+}
+
+$('#scopeFilter').addEventListener('change',()=>{updateScopeUI();render();});
+$('#periodFilter').addEventListener('change',()=>{updateScopeUI();render();});
+$('#yearFilter').addEventListener('change',render);
+$('#nimFilter').addEventListener('input',render);
+$('#syncBtn').onclick=loadData;
+$('#openSheetBtn').onclick=()=>window.open(CFG.GOOGLE_SHEET_URL,'_blank');
+document.querySelectorAll('[data-list]').forEach(b=>b.onclick=()=>showList(b.dataset.list));
+$('#modalClose').onclick=()=>$('#modal').classList.remove('show');
+$('#modal').onclick=e=>{if(e.target===$('#modal'))$('#modal').classList.remove('show');};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#modal').classList.remove('show');});
+
+loadFallbackImmediately();
+setTimeout(loadData,150);
+setInterval(()=>{if(document.visibilityState==='visible')loadData();},CFG.AUTO_SYNC_MS);
+
 </script>
 </body>
 </html>
