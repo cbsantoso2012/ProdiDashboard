@@ -312,6 +312,42 @@ function showKotaDetail(nim){
   showModal(`Detail SKS KOTA — ${x.name||x.nim}`,body);
 }
 
+function showKotaTranscript(nim){
+  const m=metrics();
+  const x=m.kota.find(y=>y.nim===String(nim));
+  const s=state.students.find(y=>y.nim===String(nim));
+  if(!x||!s)return;
+
+  const counted=new Set();
+  Object.keys(KOTA_RUMPUN).forEach(k=>x.rumpunStatus[k].rows.forEach(d=>counted.add(d)));
+  if(x.allRumpun)x.freeRows.forEach(d=>counted.add(d));
+
+  const meta=`<div class="detailmeta">
+    <span class="pill"><b>NIM:</b> ${esc(s.nim)}</span>
+    <span class="pill"><b>Nama:</b> ${esc(s.name)}</span>
+    <span class="pill"><b>Total SKS:</b> ${s.sks||0}</span>
+    <span class="pill"><b>IPK:</b> ${fmtIPK(s.ipk)}</span>
+    <span class="pill"><b>SKS KOTA:</b> ${x.sksKota} / ${KOTA_TARGET_SKS}</span>
+    <span class="pill"><b>Kekurangan KOTA:</b> ${x.gap} SKS</span>
+    <span class="pill"><b>Rumpun Kurang:</b> ${x.missing.length?esc(kotaMissingText(x)):'Tidak ada'}</span>
+  </div>
+  <div class="footnote" style="margin-bottom:10px;border:1px solid var(--line);border-radius:8px">Mata kuliah yang dihitung sebagai SKS KOTA ditampilkan <b>huruf tebal</b> dan diberi label KOTA.</div>`;
+
+  const ds=detailsFor(nim).slice().sort((a,b)=>a.no-b.no);
+  const rows=ds.map(d=>{
+    const isKota=counted.has(d);
+    return `<tr>
+      <td>${d.no||''}</td>
+      <td>${esc(d.code||'-')}</td>
+      <td>${isKota?`<b>${esc(d.course)}</b>`:esc(d.course)} ${isKota?'<span class="badge b-blue">KOTA</span>':''}</td>
+      <td>${d.sks}</td>
+      <td><span class="grade ${esc(d.grade)}">${esc(d.grade)}</span></td>
+    </tr>`;
+  });
+
+  showModal(`Transkrip Nilai & SKS KOTA — ${s.name||nim}`,meta+tableHTML(['No','Kode','Mata Kuliah','SKS','Nilai'],rows,'Detail transkrip belum tersedia di sheet DetilNilai.'));
+}
+
 function metrics(){
   const ctx=globalFilterContext();
   const ss=ctx.students||[];
@@ -415,7 +451,7 @@ function bindDrill(){
   document.querySelectorAll('[data-nim]').forEach(a=>a.onclick=()=>showTranscript(a.dataset.nim,a.dataset.grade||'ALL'));
   document.querySelectorAll('[data-course]').forEach(a=>a.onclick=()=>showCourse(a.dataset.course));
   document.querySelectorAll('[data-bad-course]').forEach(a=>a.onclick=()=>showBadCourse(a.dataset.badCourse));
-  document.querySelectorAll('[data-kota-nim]').forEach(a=>a.onclick=()=>showKotaDetail(a.dataset.kotaNim));
+  document.querySelectorAll('[data-kota-nim]').forEach(a=>a.onclick=()=>showKotaTranscript(a.dataset.kotaNim));
 }
 function showModal(title,html){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modal').classList.add('show');}
 function showTranscript(nim,grade='ALL'){
@@ -454,7 +490,7 @@ function showList(type){
   }else if(type==='badcourses'){
     showModal('Semua Mata Kuliah dengan Nilai D/E',tableHTML(['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],m.badCourses.map(x=>`<tr><td><a class="nim" onclick="showBadCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${x.count}</td><td>${x.dCount}</td><td>${x.eCount}</td><td>${x.pct.toFixed(1)}%</td></tr>`)));
   }else if(type==='kota'){
-    showModal('Semua Ketidaklengkapan SKS KOTA',tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi'],m.kota.map(x=>`<tr><td><a class="nim" onclick="showKotaDetail('${esc(x.nim)}')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota} / ${KOTA_TARGET_SKS}</b></td><td>${x.gap} SKS</td><td>${esc(kotaMissingText(x))}</td></tr>`),'Semua mahasiswa NIM 2023–2026 pada filter ini sudah memenuhi persyaratan SKS KOTA.'));
+    showModal('Semua Ketidaklengkapan SKS KOTA',tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi'],m.kota.map(x=>`<tr><td><a class="nim" onclick="showKotaTranscript('${esc(x.nim)}')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota} / ${KOTA_TARGET_SKS}</b></td><td>${x.gap} SKS</td><td>${esc(kotaMissingText(x))}</td></tr>`),'Semua mahasiswa NIM 2023–2026 pada filter ini sudah memenuhi persyaratan SKS KOTA.'));
   }
 }
 function showCourse(key){
@@ -492,4 +528,3 @@ setInterval(()=>{if(document.visibilityState==='visible')loadData();},CFG.AUTO_S
 </script>
 </body>
 </html>
-
