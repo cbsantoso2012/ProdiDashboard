@@ -48,6 +48,7 @@ button,input,select{font:inherit}.app{min-height:100vh}.topbar{position:sticky;t
 <div class="panel full"><div class="panelhead"><div><h2>Daftar Mahasiswa Periode Terpilih</h2><div class="meta">Semua status pada sheet MasaStudi • dibatasi oleh Posting yang dipilih</div></div><button class="linkbtn" data-list="period">Lihat Semua</button></div><div id="periodTable" class="tablewrap"></div><div class="footnote">Panel aktif saat Cakupan Data = Aktif dan Periode dipilih. Klik NIM untuk melihat detail transkrip.</div></div>
 <div class="panel full"><div class="panelhead"><div><h2>Mata Kuliah dengan Nilai Jelek Terbanyak</h2><div class="meta">Nilai jelek = D atau E • ranking berdasarkan jumlah mahasiswa terdampak</div></div><button class="linkbtn" data-list="badcourses">Lihat Semua</button></div><div id="badCoursesTable" class="tablewrap"></div><div class="footnote">Klik nama mata kuliah untuk melihat mahasiswa dengan nilai D/E pada mata kuliah tersebut.</div></div>
 <div class="panel full"><div class="panelhead"><div><h2>Mata Kuliah Belum Memiliki Mapping Kode</h2><div class="meta">Dibandingkan dengan sheet Mapping • mahasiswa pada filter yang SKS-nya &lt; 144</div></div><button class="linkbtn" data-list="mapping">Lihat Semua</button></div><div id="mappingTable" class="tablewrap"></div><div class="footnote">Mapping dilakukan berdasarkan nama mata kuliah Indonesia (bagian sebelum tanda “/”), tanpa membedakan huruf besar/kecil dan variasi spasi.</div></div>
+<div class="panel full"><div class="panelhead"><div><h2>Ketidaklengkapan SKS KOTA</h2><div class="meta">NIM 2023–2026 • minimal 20 SKS • seluruh 6 rumpun wajib harus terpenuhi</div></div><button class="linkbtn" data-list="kota">Lihat Semua</button></div><div id="kotaTable" class="tablewrap"></div><div class="footnote">Rumpun wajib: Urban Growth (MKU105), Urban Development (MKU104), Urban Society (KOM/PSI), Urban Culture (DKV/DP), Urban and the Future (INF), Advance (CUS). Setelah seluruh rumpun terpenuhi, mata kuliah non-SIF lain dapat menambah total menuju 20 SKS.</div></div>
 </section>
 </main></div>
 <div id="modal" class="modal"><div class="modalbox"><div class="modalhead"><h3 id="modalTitle">Detail</h3><button class="close" id="modalClose">✕</button></div><div id="modalBody" class="modalbody"></div></div></div>
@@ -111,6 +112,7 @@ function normalizeDetails(rows){
     course:key(o,['Mata Kuliah / Course Title','Mata Kuliah','Nama Mata Kuliah','NamaMataKuliah']),
     sks:+key(o,['SKS','K/C'])||0,
     grade:String(key(o,['Nilai','HM/G','Grade'])).trim().toUpperCase(),
+    code:String(key(o,['Kode Mata Kuliah','Kode MK','KodeMK','Kode'])).trim().toUpperCase(),
     raw:o
   })).filter(x=>x.nim&&x.course);
 }
@@ -252,6 +254,64 @@ function globalFilterContext(){
 function filteredStudents(){return globalFilterContext().students||[];}
 function detailsFor(nim){return state.details.filter(d=>d.nim===String(nim));}
 
+const KOTA_TARGET_SKS=20;
+const KOTA_TARGET_YEARS=new Set(['2023','2024','2025','2026']);
+const KOTA_RUMPUN={
+  urban_growth:{no:1,name:'Urban Growth',criteria:'MKU105'},
+  urban_development:{no:2,name:'Urban Development',criteria:'MKU104'},
+  urban_society:{no:3,name:'Urban Society',criteria:'KOM / PSI'},
+  urban_culture:{no:4,name:'Urban Culture',criteria:'DKV / DP'},
+  urban_future:{no:5,name:'Urban and the Future',criteria:'INF'},
+  advance:{no:6,name:'Advance',criteria:'CUS'}
+};
+function kotaRumpun(code){
+  const c=String(code||'').trim().toUpperCase();
+  if(c==='MKU105')return'urban_growth';
+  if(c==='MKU104')return'urban_development';
+  if(c.startsWith('KOM')||c.startsWith('PSI'))return'urban_society';
+  if(c.startsWith('DKV')||c.startsWith('DP'))return'urban_culture';
+  if(c.startsWith('INF'))return'urban_future';
+  if(c.startsWith('CUS'))return'advance';
+  return null;
+}
+function kotaMonitoring(students,details){
+  const targetStudents=students.filter(s=>KOTA_TARGET_YEARS.has(String(s.nim).slice(0,4)));
+  const by=details.reduce((a,x)=>((a[x.nim]??=[]).push(x),a),{});
+  return targetStudents.map(s=>{
+    const ds=by[s.nim]||[];
+    const rumpunRows={};Object.keys(KOTA_RUMPUN).forEach(k=>rumpunRows[k]=[]);
+    const freeRows=[];
+    ds.forEach(d=>{
+      const code=String(d.code||'').trim().toUpperCase();
+      if(!code)return;
+      const r=kotaRumpun(code);
+      if(r)rumpunRows[r].push(d); else if(!code.startsWith('SIF'))freeRows.push(d);
+    });
+    const rumpunStatus={};let sksRumpun=0;
+    Object.keys(KOTA_RUMPUN).forEach(k=>{
+      const rows=rumpunRows[k];const sks=rows.reduce((t,x)=>t+(+x.sks||0),0);sksRumpun+=sks;
+      rumpunStatus[k]={...KOTA_RUMPUN[k],fulfilled:rows.length>0,sks,rows};
+    });
+    const missing=Object.keys(rumpunStatus).filter(k=>!rumpunStatus[k].fulfilled);
+    const allRumpun=missing.length===0;
+    const sksFree=allRumpun?freeRows.reduce((t,x)=>t+(+x.sks||0),0):0;
+    const sksKota=sksRumpun+sksFree;
+    const gap=Math.max(0,KOTA_TARGET_SKS-sksKota);
+    const complete=allRumpun&&sksKota>=KOTA_TARGET_SKS;
+    return{...s,sksKota,sksRumpun,sksFree,gap,missing,allRumpun,complete,rumpunStatus,freeRows};
+  }).filter(x=>!x.complete).sort((a,b)=>b.missing.length-a.missing.length||b.gap-a.gap||a.nim.localeCompare(b.nim));
+}
+function kotaMissingText(x){return x.missing.length?x.missing.map(k=>KOTA_RUMPUN[k].name).join(', '):'-';}
+function showKotaDetail(nim){
+  const m=metrics();const x=m.kota.find(y=>y.nim===String(nim));if(!x)return;
+  const summary=`<div class="detailmeta"><span class="pill"><b>NIM:</b> ${esc(x.nim)}</span><span class="pill"><b>Nama:</b> ${esc(x.name)}</span><span class="pill"><b>SKS KOTA:</b> ${x.sksKota} / ${KOTA_TARGET_SKS}</span><span class="pill"><b>Kekurangan:</b> ${x.gap} SKS</span><span class="pill"><b>Rumpun Kurang:</b> ${x.missing.length}</span></div>`;
+  const rumpunRows=Object.keys(KOTA_RUMPUN).map(k=>{const r=x.rumpunStatus[k];return `<tr><td>${r.no}. ${esc(r.name)}</td><td>${esc(r.criteria)}</td><td>${r.fulfilled?'<span class="badge b-green">Terpenuhi</span>':'<span class="badge b-red">Belum</span>'}</td><td>${r.sks}</td></tr>`;}).join('');
+  let courseRows=[];Object.keys(KOTA_RUMPUN).forEach(k=>{const r=x.rumpunStatus[k];r.rows.forEach(d=>courseRows.push(`<tr><td>${esc(r.name)}</td><td>${esc(d.code)}</td><td>${esc(d.course)}</td><td>${d.sks}</td><td>${esc(d.grade)}</td></tr>`));});
+  if(x.allRumpun)x.freeRows.forEach(d=>courseRows.push(`<tr><td>Rumpun Bebas</td><td>${esc(d.code)}</td><td>${esc(d.course)}</td><td>${d.sks}</td><td>${esc(d.grade)}</td></tr>`));
+  const body=summary+`<h4>Status 6 Rumpun</h4>`+tableHTML(['Rumpun','Kriteria','Status','SKS'],rumpunRows)+`<h4>Mata Kuliah yang Dihitung sebagai SKS KOTA</h4>`+tableHTML(['Kelompok','Kode','Mata Kuliah','SKS','Nilai'],courseRows,'Belum ada mata kuliah KOTA yang teridentifikasi.');
+  showModal(`Detail SKS KOTA — ${x.name||x.nim}`,body);
+}
+
 function metrics(){
   const ctx=globalFilterContext();
   const ss=ctx.students||[];
@@ -305,7 +365,9 @@ function metrics(){
     pct:ss.length?100*x.students.size/ss.length:0
   })).sort((a,b)=>b.count-a.count||b.eCount-a.eCount||b.dCount-a.dCount||a.course.localeCompare(b.course));
 
-  return {ctx,ss,ds,topIPK,cum,under,D,E,unmapped,badCourses,periodRows:ctx.masaRows||[]};
+  const kota=kotaMonitoring(ss,ds);
+
+  return {ctx,ss,ds,topIPK,cum,under,D,E,unmapped,badCourses,kota,periodRows:ctx.masaRows||[]};
 }
 function tableHTML(headers,rows,emptyText='Tidak ada data pada filter ini.'){
   if(!rows.length)return`<div class="empty">${esc(emptyText)}</div>`;
@@ -345,12 +407,15 @@ function render(){
   );
 
   $('#mappingTable').innerHTML=tableHTML(['Mata Kuliah','SKS','Mahasiswa Terdampak','Status'],m.unmapped.slice(0,limit).map(x=>`<tr><td><a class="nim" data-course="${esc(canonicalCourse(x.course))}">${esc(x.course)}</a></td><td>${esc(x.sksText)}</td><td><b>${x.count}</b></td><td><span class="badge b-amber">Belum Mapping</span></td></tr>`));
+
+  $('#kotaTable').innerHTML=tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi'],m.kota.slice(0,limit).map(x=>`<tr><td><a class="nim" data-kota-nim="${esc(x.nim)}">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota} / ${KOTA_TARGET_SKS}</b></td><td>${x.gap>0?`<span class="badge b-amber">${x.gap} SKS</span>`:'<span class="badge b-green">0 SKS</span>'}</td><td>${x.missing.length?`<span class="badge b-red">${esc(kotaMissingText(x))}</span>`:'<span class="badge b-green">Semua rumpun lengkap</span>'}</td></tr>`),'Semua mahasiswa NIM 2023–2026 pada filter ini sudah memenuhi persyaratan SKS KOTA.');
   bindDrill();
 }
 function bindDrill(){
   document.querySelectorAll('[data-nim]').forEach(a=>a.onclick=()=>showTranscript(a.dataset.nim,a.dataset.grade||'ALL'));
   document.querySelectorAll('[data-course]').forEach(a=>a.onclick=()=>showCourse(a.dataset.course));
   document.querySelectorAll('[data-bad-course]').forEach(a=>a.onclick=()=>showBadCourse(a.dataset.badCourse));
+  document.querySelectorAll('[data-kota-nim]').forEach(a=>a.onclick=()=>showKotaDetail(a.dataset.kotaNim));
 }
 function showModal(title,html){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modal').classList.add('show');}
 function showTranscript(nim,grade='ALL'){
@@ -388,6 +453,8 @@ function showList(type){
     showModal('Semua Mahasiswa Periode Terpilih',tableHTML(['NIM','Nama','Status Mhs','Status Semester','Semester','IPK','Masa Studi'],m.periodRows.map(x=>`<tr><td><a class="nim" onclick="showTranscript('${esc(x.nim)}','ALL')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td>${esc(x.statusMahasiswa||'-')}</td><td>${esc(x.statusSemester||'-')}</td><td>${x.semester||'-'}</td><td>${fmtIPK(x.ipk)}</td><td>${esc(x.masaStudi||'-')}</td></tr>`),msg));
   }else if(type==='badcourses'){
     showModal('Semua Mata Kuliah dengan Nilai D/E',tableHTML(['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],m.badCourses.map(x=>`<tr><td><a class="nim" onclick="showBadCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${x.count}</td><td>${x.dCount}</td><td>${x.eCount}</td><td>${x.pct.toFixed(1)}%</td></tr>`)));
+  }else if(type==='kota'){
+    showModal('Semua Ketidaklengkapan SKS KOTA',tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi'],m.kota.map(x=>`<tr><td><a class="nim" onclick="showKotaDetail('${esc(x.nim)}')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota} / ${KOTA_TARGET_SKS}</b></td><td>${x.gap} SKS</td><td>${esc(kotaMissingText(x))}</td></tr>`),'Semua mahasiswa NIM 2023–2026 pada filter ini sudah memenuhi persyaratan SKS KOTA.'));
   }
 }
 function showCourse(key){
@@ -425,3 +492,4 @@ setInterval(()=>{if(document.visibilityState==='visible')loadData();},CFG.AUTO_S
 </script>
 </body>
 </html>
+
