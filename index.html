@@ -15,11 +15,13 @@ button,input,select{font:inherit}.app{min-height:100vh}.topbar{position:sticky;t
 .modal{display:none;position:fixed;inset:0;background:rgba(5,22,38,.62);z-index:100;padding:22px;align-items:center;justify-content:center}.modal.show{display:flex}.modalbox{background:white;border-radius:16px;width:min(1150px,96vw);max-height:88vh;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.28)}.modalhead{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.modalhead h3{margin:0;font-size:16px}.close{background:#edf3f7;border:0;border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:900}.modalbody{padding:14px 18px;overflow:auto;max-height:74vh}.detailmeta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.pill{background:#eff6fb;border:1px solid #d9e7f0;border-radius:999px;padding:6px 9px;font-size:11px}.grade{font-weight:900}.grade.D,.grade.E{color:var(--red)}.grade.A{color:var(--green)}
 .alert{padding:10px 12px;margin-bottom:14px;border-radius:10px;font-size:12px;background:#fff8df;border:1px solid #f2df9a;color:#795f00;display:none}.alert.show{display:block}
 @media(max-width:1250px){.kpis{grid-template-columns:repeat(4,1fr)}}@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}@media(max-width:780px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.toprow{align-items:flex-start;flex-direction:column}.wrap{padding:12px}.panel.full{grid-column:auto}}@media(max-width:480px){.kpis{grid-template-columns:1fr 1fr}.kpi .value{font-size:22px}}
+
+.paneltools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.miniSelect{border:1px solid #cfe0ec;border-radius:8px;padding:7px 9px;background:#fff;color:var(--text);font-size:11px;font-weight:700}.insight{padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#f8fbfe;margin:10px 0 14px;font-size:12px;line-height:1.55}.insight strong{color:var(--navy)}.kota-row{font-weight:800}.statusline{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.statusline .pill{margin:0}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="topbar"><div class="toprow"><div class="brand"><h1>Dashboard Prodi Sistem Informasi</h1><p>Monitoring kelulusan, SKS, nilai kritis, dan mapping mata kuliah • Data live Google Sheet</p></div><div class="actions"><span class="status"><span id="statusDot" class="dot"></span><span id="statusText">Memuat data...</span></span><button class="btn ghost" id="syncBtn">↻ Sync Now</button><button class="btn light" id="openSheetBtn">Open Google Sheet</button></div></div></header>
+<header class="topbar"><div class="toprow"><div class="brand"><h1>Dashboard Prodi Sistem Informasi</h1><p>Monitoring Kurikulum 2023/2019, KOTA, predikat, potensi kelulusan, dan nilai kritis • Data live Google Sheet</p></div><div class="actions"><span class="status"><span id="statusDot" class="dot"></span><span id="statusText">Memuat data...</span></span><button class="btn ghost" id="syncBtn">↻ Sync Now</button><button class="btn light" id="openSheetBtn">Open Google Sheet</button></div></div></header>
 <main class="wrap">
 <div id="alertBox" class="alert"></div>
 <section class="filters">
@@ -31,24 +33,19 @@ button,input,select{font:inherit}.app{min-height:100vh}.topbar{position:sticky;t
 </section>
 <section class="kpis">
 <div class="kpi"><div class="label">Mahasiswa</div><div class="value" id="kpiStudents">0</div><div class="sub">sesuai filter global</div></div>
-<div class="kpi"><div class="label">Mhs Periode</div><div class="value" id="kpiPeriod">-</div><div class="sub">NIM pada MasaStudi</div></div>
-<div class="kpi good"><div class="label">Kandidat Cumlaude</div><div class="value" id="kpiCumlaude">0</div><div class="sub">semua nilai minimal B</div></div>
-<div class="kpi warn"><div class="label">SKS &lt; 144</div><div class="value" id="kpiSks">0</div><div class="sub">perlu monitoring kelulusan</div></div>
-<div class="kpi bad"><div class="label">Ada Nilai D</div><div class="value" id="kpiD">0</div><div class="sub">mahasiswa terdampak</div></div>
+<div class="kpi good"><div class="label">Kandidat Cumlaude</div><div class="value" id="kpiCumlaude">0</div><div class="sub">IPK ≥ 3.51 dan semua nilai min. B</div></div>
 <div class="kpi bad"><div class="label">Ada Nilai E</div><div class="value" id="kpiE">0</div><div class="sub">mahasiswa terdampak</div></div>
-<div class="kpi warn"><div class="label">MK Belum Mapping</div><div class="value" id="kpiMap">0</div><div class="sub">judul MK unik</div></div>
+<div class="kpi bad"><div class="label">Ada Nilai D</div><div class="value" id="kpiD">0</div><div class="sub">mahasiswa terdampak</div></div>
 <div class="kpi bad"><div class="label">MK Nilai Jelek</div><div class="value" id="kpiBadCourses">0</div><div class="sub">MK memiliki D/E</div></div>
 </section>
 <section class="grid">
-<div class="panel"><div class="panelhead"><div><h2>Mahasiswa dengan IPK Tertinggi</h2><div class="meta">Top 5 berdasarkan IPK • mengikuti seluruh filter dashboard</div></div><button class="linkbtn" data-list="topipk">Lihat Semua</button></div><div id="topIpkTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat seluruh detail transkrip nilai mahasiswa.</div></div>
-<div class="panel"><div class="panelhead"><div><h2>Daftar Mahasiswa Cumlaude</h2><div class="meta">Nilai mata kuliah minimal B • urut IPK tertinggi</div></div><button class="linkbtn" data-list="cumlaude">Lihat Semua</button></div><div id="cumlaudeTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat seluruh detail transkrip.</div></div>
-<div class="panel"><div class="panelhead"><div><h2>Mahasiswa Kurang dari 144 SKS</h2><div class="meta">Prioritas berdasarkan kekurangan SKS terbesar</div></div><button class="linkbtn" data-list="sks">Lihat Semua</button></div><div id="sksTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat seluruh detail transkrip.</div></div>
-<div class="panel"><div class="panelhead"><div><h2>Mahasiswa dengan Nilai E</h2><div class="meta">Daftar mahasiswa yang masih memiliki nilai E</div></div><button class="linkbtn" data-list="E">Lihat Semua</button></div><div id="eTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat hanya mata kuliah bernilai E.</div></div>
-<div class="panel"><div class="panelhead"><div><h2>Mahasiswa dengan Nilai D</h2><div class="meta">Daftar mahasiswa yang masih memiliki nilai D</div></div><button class="linkbtn" data-list="D">Lihat Semua</button></div><div id="dTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat hanya mata kuliah bernilai D.</div></div>
-<div class="panel full"><div class="panelhead"><div><h2>Daftar Mahasiswa Periode Terpilih</h2><div class="meta">Semua status pada sheet MasaStudi • dibatasi oleh Posting yang dipilih</div></div><button class="linkbtn" data-list="period">Lihat Semua</button></div><div id="periodTable" class="tablewrap"></div><div class="footnote">Panel aktif saat Cakupan Data = Aktif dan Periode dipilih. Klik NIM untuk melihat detail transkrip.</div></div>
-<div class="panel full"><div class="panelhead"><div><h2>Mata Kuliah dengan Nilai Jelek Terbanyak</h2><div class="meta">Nilai jelek = D atau E • ranking berdasarkan jumlah mahasiswa terdampak</div></div><button class="linkbtn" data-list="badcourses">Lihat Semua</button></div><div id="badCoursesTable" class="tablewrap"></div><div class="footnote">Klik nama mata kuliah untuk melihat mahasiswa dengan nilai D/E pada mata kuliah tersebut.</div></div>
-<div class="panel full"><div class="panelhead"><div><h2>Mata Kuliah Belum Memiliki Mapping Kode</h2><div class="meta">Dibandingkan dengan sheet Mapping • mahasiswa pada filter yang SKS-nya &lt; 144</div></div><button class="linkbtn" data-list="mapping">Lihat Semua</button></div><div id="mappingTable" class="tablewrap"></div><div class="footnote">Mapping dilakukan berdasarkan nama mata kuliah Indonesia (bagian sebelum tanda “/”), tanpa membedakan huruf besar/kecil dan variasi spasi.</div></div>
-<div class="panel full"><div class="panelhead"><div><h2>Ketidaklengkapan SKS KOTA</h2><div class="meta">NIM 2023–2026 • minimal 20 SKS • seluruh 6 rumpun wajib harus terpenuhi</div></div><button class="linkbtn" data-list="kota">Lihat Semua</button></div><div id="kotaTable" class="tablewrap"></div><div class="footnote">Rumpun wajib: Urban Growth (MKU105), Urban Development (MKU104), Urban Society (KOM/PSI), Urban Culture (DKV/DP), Urban and the Future (INF), Advance (CUS). Setelah seluruh rumpun terpenuhi, mata kuliah non-SIF lain dapat menambah total menuju 20 SKS.</div></div>
+<div class="panel full"><div class="panelhead"><div><h2>Pengecekan Mahasiswa Kur 2023</h2><div class="meta">NIM 2023–2026 • minimal 20 SKS KOTA • seluruh 6 rumpun wajib</div></div><div class="paneltools"><select id="kota2023Filter" class="miniSelect"><option value="all" selected>All</option><option value="complete">Lengkap KOTA</option></select><button class="linkbtn" data-list="kota2023">Lihat Semua</button></div></div><div id="kota2023Table" class="tablewrap"></div><div class="footnote">6 rumpun: Urban Growth (MKU105), Urban Development (MKU104), Urban Society (KOM/PSI), Urban Culture (DKV/DP), Urban and the Future (INF), Advance (CUS). Setelah 6 rumpun lengkap, mata kuliah non-SIF dapat menambah total menuju 20 SKS. Klik NIM untuk transkrip.</div></div>
+<div class="panel full"><div class="panelhead"><div><h2>Pengecekan Mahasiswa Kur 2019</h2><div class="meta">NIM 2022 ke bawah • 5 rumpun KOTA wajib terpenuhi</div></div><div class="paneltools"><select id="kota2019Filter" class="miniSelect"><option value="all" selected>All</option><option value="complete">Lengkap KOTA</option></select><button class="linkbtn" data-list="kota2019">Lihat Semua</button></div></div><div id="kota2019Table" class="tablewrap"></div><div class="footnote">5 rumpun: Urban Growth (Wawasan Kewirausahaan/Kewirausahaan Dasar), Urban Development (Pembangunan Berkelanjutan), Urban Society (KOM/PSI), Urban Culture (DKV/DP), Urban and the Future (INF). Klik NIM untuk transkrip.</div></div>
+<div class="panel"><div class="panelhead"><div><h2>Daftar Mahasiswa dengan IPK Tertinggi</h2><div class="meta">Top 5 berdasarkan IPK • mengikuti seluruh filter dashboard</div></div><button class="linkbtn" data-list="topipk">Lihat Semua</button></div><div id="topIpkTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat transkrip, predikat, status KOTA, dan potensi kelulusan.</div></div>
+<div class="panel"><div class="panelhead"><div><h2>Daftar Mahasiswa Cumlaude</h2><div class="meta">IPK minimal 3.51 dan seluruh nilai mata kuliah minimal B</div></div><button class="linkbtn" data-list="cumlaude">Lihat Semua</button></div><div id="cumlaudeTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk melihat seluruh detail transkrip.</div></div>
+<div class="panel"><div class="panelhead"><div><h2>Daftar Mahasiswa dengan Nilai E</h2><div class="meta">Mahasiswa yang masih memiliki nilai E</div></div><button class="linkbtn" data-list="E">Lihat Semua</button></div><div id="eTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk membuka transkrip lengkap; nilai E tetap ditandai.</div></div>
+<div class="panel"><div class="panelhead"><div><h2>Daftar Mahasiswa dengan Nilai D</h2><div class="meta">Mahasiswa yang masih memiliki nilai D</div></div><button class="linkbtn" data-list="D">Lihat Semua</button></div><div id="dTable" class="tablewrap"></div><div class="footnote">Klik NIM untuk membuka transkrip lengkap; nilai D tetap ditandai.</div></div>
+<div class="panel full"><div class="panelhead"><div><h2>Daftar Mata Kuliah dengan Nilai Jelek Terbanyak</h2><div class="meta">Nilai jelek = D atau E • ranking berdasarkan jumlah mahasiswa terdampak</div></div><button class="linkbtn" data-list="badcourses">Lihat Semua</button></div><div id="badCoursesTable" class="tablewrap"></div><div class="footnote">Klik nama mata kuliah untuk melihat mahasiswa dengan nilai D/E pada mata kuliah tersebut.</div></div>
 </section>
 </main></div>
 <div id="modal" class="modal"><div class="modalbox"><div class="modalhead"><h3 id="modalTitle">Detail</h3><button class="close" id="modalClose">✕</button></div><div id="modalBody" class="modalbody"></div></div></div>
@@ -255,8 +252,8 @@ function filteredStudents(){return globalFilterContext().students||[];}
 function detailsFor(nim){return state.details.filter(d=>d.nim===String(nim));}
 
 const KOTA_TARGET_SKS=20;
-const KOTA_TARGET_YEARS=new Set(['2023','2024','2025','2026']);
-const KOTA_RUMPUN={
+const KOTA_2023_YEARS=new Set(['2023','2024','2025','2026']);
+const KOTA23_RUMPUN={
   urban_growth:{no:1,name:'Urban Growth',criteria:'MKU105'},
   urban_development:{no:2,name:'Urban Development',criteria:'MKU104'},
   urban_society:{no:3,name:'Urban Society',criteria:'KOM / PSI'},
@@ -264,7 +261,20 @@ const KOTA_RUMPUN={
   urban_future:{no:5,name:'Urban and the Future',criteria:'INF'},
   advance:{no:6,name:'Advance',criteria:'CUS'}
 };
-function kotaRumpun(code){
+const KOTA19_RUMPUN={
+  urban_growth:{no:1,name:'Urban Growth',criteria:'Wawasan Kewirausahaan / Kewirausahaan Dasar'},
+  urban_development:{no:2,name:'Urban Development',criteria:'Pembangunan Berkelanjutan'},
+  urban_society:{no:3,name:'Urban Society',criteria:'KOM / PSI'},
+  urban_culture:{no:4,name:'Urban Culture',criteria:'DKV / DP'},
+  urban_future:{no:5,name:'Urban and the Future',criteria:'INF'}
+};
+function curriculumForNim(nim){
+  const y=+String(nim||'').slice(0,4);
+  if(y>=2023&&y<=2026)return'2023';
+  if(y>0&&y<=2022)return'2019';
+  return'';
+}
+function kota23Rumpun(code){
   const c=String(code||'').trim().toUpperCase();
   if(c==='MKU105')return'urban_growth';
   if(c==='MKU104')return'urban_development';
@@ -274,78 +284,93 @@ function kotaRumpun(code){
   if(c.startsWith('CUS'))return'advance';
   return null;
 }
-function kotaMonitoring(students,details){
-  const targetStudents=students.filter(s=>KOTA_TARGET_YEARS.has(String(s.nim).slice(0,4)));
-  const by=details.reduce((a,x)=>((a[x.nim]??=[]).push(x),a),{});
-  return targetStudents.map(s=>{
-    const ds=by[s.nim]||[];
-    const rumpunRows={};Object.keys(KOTA_RUMPUN).forEach(k=>rumpunRows[k]=[]);
-    const freeRows=[];
-    ds.forEach(d=>{
-      const code=String(d.code||'').trim().toUpperCase();
-      if(!code)return;
-      const r=kotaRumpun(code);
-      if(r)rumpunRows[r].push(d); else if(!code.startsWith('SIF'))freeRows.push(d);
-    });
-    const rumpunStatus={};let sksRumpun=0;
-    Object.keys(KOTA_RUMPUN).forEach(k=>{
-      const rows=rumpunRows[k];const sks=rows.reduce((t,x)=>t+(+x.sks||0),0);sksRumpun+=sks;
-      rumpunStatus[k]={...KOTA_RUMPUN[k],fulfilled:rows.length>0,sks,rows};
-    });
-    const missing=Object.keys(rumpunStatus).filter(k=>!rumpunStatus[k].fulfilled);
-    const allRumpun=missing.length===0;
-    const sksFree=allRumpun?freeRows.reduce((t,x)=>t+(+x.sks||0),0):0;
-    const sksKota=sksRumpun+sksFree;
-    const gap=Math.max(0,KOTA_TARGET_SKS-sksKota);
-    const complete=allRumpun&&sksKota>=KOTA_TARGET_SKS;
-    return{...s,sksKota,sksRumpun,sksFree,gap,missing,allRumpun,complete,rumpunStatus,freeRows};
-  }).filter(x=>!x.complete).sort((a,b)=>b.missing.length-a.missing.length||b.gap-a.gap||a.nim.localeCompare(b.nim));
+function kota19Rumpun(d){
+  const c=String(d.code||'').trim().toUpperCase();
+  const n=canonicalCourse(d.course);
+  if(n.includes('wawasan kewirausahaan')||n.includes('kewirausahaan dasar'))return'urban_growth';
+  if(n.includes('pembangunan berkelanjutan'))return'urban_development';
+  if(c.startsWith('KOM')||c.startsWith('PSI'))return'urban_society';
+  if(c.startsWith('DKV')||c.startsWith('DP'))return'urban_culture';
+  if(c.startsWith('INF'))return'urban_future';
+  return null;
 }
-function kotaMissingText(x){return x.missing.length?x.missing.map(k=>KOTA_RUMPUN[k].name).join(', '):'-';}
-function showKotaDetail(nim){
-  const m=metrics();const x=m.kota.find(y=>y.nim===String(nim));if(!x)return;
-  const summary=`<div class="detailmeta"><span class="pill"><b>NIM:</b> ${esc(x.nim)}</span><span class="pill"><b>Nama:</b> ${esc(x.name)}</span><span class="pill"><b>SKS KOTA:</b> ${x.sksKota} / ${KOTA_TARGET_SKS}</span><span class="pill"><b>Kekurangan:</b> ${x.gap} SKS</span><span class="pill"><b>Rumpun Kurang:</b> ${x.missing.length}</span></div>`;
-  const rumpunRows=Object.keys(KOTA_RUMPUN).map(k=>{const r=x.rumpunStatus[k];return `<tr><td>${r.no}. ${esc(r.name)}</td><td>${esc(r.criteria)}</td><td>${r.fulfilled?'<span class="badge b-green">Terpenuhi</span>':'<span class="badge b-red">Belum</span>'}</td><td>${r.sks}</td></tr>`;}).join('');
-  let courseRows=[];Object.keys(KOTA_RUMPUN).forEach(k=>{const r=x.rumpunStatus[k];r.rows.forEach(d=>courseRows.push(`<tr><td>${esc(r.name)}</td><td>${esc(d.code)}</td><td>${esc(d.course)}</td><td>${d.sks}</td><td>${esc(d.grade)}</td></tr>`));});
-  if(x.allRumpun)x.freeRows.forEach(d=>courseRows.push(`<tr><td>Rumpun Bebas</td><td>${esc(d.code)}</td><td>${esc(d.course)}</td><td>${d.sks}</td><td>${esc(d.grade)}</td></tr>`));
-  const body=summary+`<h4>Status 6 Rumpun</h4>`+tableHTML(['Rumpun','Kriteria','Status','SKS'],rumpunRows)+`<h4>Mata Kuliah yang Dihitung sebagai SKS KOTA</h4>`+tableHTML(['Kelompok','Kode','Mata Kuliah','SKS','Nilai'],courseRows,'Belum ada mata kuliah KOTA yang teridentifikasi.');
-  showModal(`Detail SKS KOTA — ${x.name||x.nim}`,body);
+function analyzeKota2023(s,ds){
+  const rumpunRows={};Object.keys(KOTA23_RUMPUN).forEach(k=>rumpunRows[k]=[]);
+  const freeRows=[];
+  ds.forEach(d=>{const code=String(d.code||'').trim().toUpperCase();if(!code)return;const r=kota23Rumpun(code);if(r)rumpunRows[r].push(d);else if(!code.startsWith('SIF'))freeRows.push(d);});
+  const rumpunStatus={};let sksRumpun=0;
+  Object.keys(KOTA23_RUMPUN).forEach(k=>{const rows=rumpunRows[k],sks=rows.reduce((a,x)=>a+(+x.sks||0),0);sksRumpun+=sks;rumpunStatus[k]={...KOTA23_RUMPUN[k],fulfilled:rows.length>0,sks,rows};});
+  const missing=Object.keys(rumpunStatus).filter(k=>!rumpunStatus[k].fulfilled);
+  const allRumpun=missing.length===0;
+  const sksFree=allRumpun?freeRows.reduce((a,x)=>a+(+x.sks||0),0):0;
+  const sksKota=sksRumpun+sksFree;
+  const gap=Math.max(0,KOTA_TARGET_SKS-sksKota);
+  const complete=allRumpun&&sksKota>=KOTA_TARGET_SKS;
+  const countedRows=[];Object.keys(rumpunStatus).forEach(k=>countedRows.push(...rumpunStatus[k].rows));if(allRumpun)countedRows.push(...freeRows);
+  return{...s,curriculum:'2023',sksKota,sksRumpun,sksFree,gap,missing,allRumpun,complete,rumpunStatus,freeRows,countedRows};
 }
-
-function showKotaTranscript(nim){
-  const m=metrics();
-  const x=m.kota.find(y=>y.nim===String(nim));
-  const s=state.students.find(y=>y.nim===String(nim));
-  if(!x||!s)return;
-
-  const counted=new Set();
-  Object.keys(KOTA_RUMPUN).forEach(k=>x.rumpunStatus[k].rows.forEach(d=>counted.add(d)));
-  if(x.allRumpun)x.freeRows.forEach(d=>counted.add(d));
-
-  const meta=`<div class="detailmeta">
-    <span class="pill"><b>NIM:</b> ${esc(s.nim)}</span>
-    <span class="pill"><b>Nama:</b> ${esc(s.name)}</span>
-    <span class="pill"><b>Total SKS:</b> ${s.sks||0}</span>
-    <span class="pill"><b>IPK:</b> ${fmtIPK(s.ipk)}</span>
-    <span class="pill"><b>SKS KOTA:</b> ${x.sksKota} / ${KOTA_TARGET_SKS}</span>
-    <span class="pill"><b>Kekurangan KOTA:</b> ${x.gap} SKS</span>
-    <span class="pill"><b>Rumpun Kurang:</b> ${x.missing.length?esc(kotaMissingText(x)):'Tidak ada'}</span>
-  </div>
-  <div class="footnote" style="margin-bottom:10px;border:1px solid var(--line);border-radius:8px">Mata kuliah yang dihitung sebagai SKS KOTA ditampilkan <b>huruf tebal</b> dan diberi label KOTA.</div>`;
-
-  const ds=detailsFor(nim).slice().sort((a,b)=>a.no-b.no);
-  const rows=ds.map(d=>{
-    const isKota=counted.has(d);
-    return `<tr>
-      <td>${d.no||''}</td>
-      <td>${esc(d.code||'-')}</td>
-      <td>${isKota?`<b>${esc(d.course)}</b>`:esc(d.course)} ${isKota?'<span class="badge b-blue">KOTA</span>':''}</td>
-      <td>${d.sks}</td>
-      <td><span class="grade ${esc(d.grade)}">${esc(d.grade)}</span></td>
-    </tr>`;
-  });
-
-  showModal(`Transkrip Nilai & SKS KOTA — ${s.name||nim}`,meta+tableHTML(['No','Kode','Mata Kuliah','SKS','Nilai'],rows,'Detail transkrip belum tersedia di sheet DetilNilai.'));
+function analyzeKota2019(s,ds){
+  const rumpunRows={};Object.keys(KOTA19_RUMPUN).forEach(k=>rumpunRows[k]=[]);
+  ds.forEach(d=>{const r=kota19Rumpun(d);if(r)rumpunRows[r].push(d);});
+  const rumpunStatus={};let sksKota=0;
+  Object.keys(KOTA19_RUMPUN).forEach(k=>{const rows=rumpunRows[k],sks=rows.reduce((a,x)=>a+(+x.sks||0),0);sksKota+=sks;rumpunStatus[k]={...KOTA19_RUMPUN[k],fulfilled:rows.length>0,sks,rows};});
+  const missing=Object.keys(rumpunStatus).filter(k=>!rumpunStatus[k].fulfilled);
+  const complete=missing.length===0;
+  const countedRows=[];Object.keys(rumpunStatus).forEach(k=>countedRows.push(...rumpunStatus[k].rows));
+  return{...s,curriculum:'2019',sksKota,gap:0,missing,allRumpun:complete,complete,rumpunStatus,freeRows:[],countedRows};
+}
+function kotaMissingText(x){
+  const master=x.curriculum==='2023'?KOTA23_RUMPUN:KOTA19_RUMPUN;
+  return x.missing.length?x.missing.map(k=>master[k].name).join(', '):'-';
+}
+function kotaForStudent(nim){
+  const s=state.students.find(x=>x.nim===String(nim));if(!s)return null;
+  const ds=detailsFor(nim),kur=curriculumForNim(nim);
+  return kur==='2023'?analyzeKota2023(s,ds):kur==='2019'?analyzeKota2019(s,ds):null;
+}
+function latestMasaFor(nim){
+  const chosen=$('#periodFilter')?.value||'';
+  const rows=state.masa.filter(x=>x.nim===String(nim));
+  if(chosen){const hit=rows.find(x=>x.posting===chosen);if(hit)return hit;}
+  return rows.slice().sort((a,b)=>String(b.posting).localeCompare(String(a.posting)))[0]||null;
+}
+function graduationPredicate(ipk){
+  const v=+ipk;
+  if(v>=3.51&&v<=4)return'Cum Laude';
+  if(v>=3.01&&v<=3.50)return'Sangat Memuaskan';
+  if(v>=2.76&&v<=3.00)return'Memuaskan';
+  return'-';
+}
+function parseMasaMonths(s){
+  const txt=String(s||'');
+  const y=+(txt.match(/(\d+)\s*Tahun/i)?.[1]||0),m=+(txt.match(/(\d+)\s*Bulan/i)?.[1]||0);
+  return y*12+m;
+}
+function academicInsight(nim){
+  const s=state.students.find(x=>x.nim===String(nim));
+  const mr=latestMasaFor(nim);
+  const ds=detailsFor(nim);
+  const kota=kotaForStudent(nim);
+  const dCount=ds.filter(x=>x.grade==='D').length,eCount=ds.filter(x=>x.grade==='E').length;
+  const pred=graduationPredicate(s?.ipk??mr?.ipk??0);
+  const status=String(mr?.statusMahasiswa||'').toLowerCase();
+  const semester=+mr?.semester||0,masaMonths=parseMasaMonths(mr?.masaStudi),gap=Math.max(0,CFG.TARGET_SKS-(+s?.sks||0));
+  const noDE=dCount===0&&eCount===0,kotaComplete=kota?!!kota.complete:false;
+  if(status.includes('lulus'))return{pred,mr,kota,dCount,eCount,potential:`Lulus — ${mr?.masaStudi||'masa studi tersedia di MasaStudi'}`,recommendation:`Studi telah selesai. Predikat berdasarkan IPK: ${pred}.`};
+  if(status.includes('putus'))return{pred,mr,kota,dCount,eCount,potential:'Tidak dinilai — Putus Studi',recommendation:'Status mahasiswa tercatat Putus Studi pada sheet MasaStudi.'};
+  const active=status==='aktif'&&String(mr?.statusSemester||'').toLowerCase()==='aktif';
+  const remainSem=Math.max(0,7-semester),sksReachable=semester>0&&semester<=7&&gap<=remainSem*24;
+  const within35=!masaMonths||masaMonths<=42;
+  let potential='Perlu Perhatian';
+  if(active&&semester>0&&semester<=7&&within35&&sksReachable&&noDE&&kotaComplete&&(+s?.ipk||0)>=3.51)potential='Tinggi — berpotensi selesai 3,5 tahun';
+  else if(active&&semester>0&&semester<=8&&noDE&&gap<=48)potential='Sedang — masih berpotensi lulus tepat waktu dengan percepatan yang terukur';
+  const issues=[];
+  if(!kotaComplete)issues.push('lengkapi persyaratan KOTA');
+  if(dCount||eCount)issues.push(`perbaiki nilai D/E (${dCount} D, ${eCount} E)`);
+  if(gap>0)issues.push(`selesaikan sisa ${gap} SKS menuju ${CFG.TARGET_SKS} SKS`);
+  if(!active&&mr)issues.push(`perhatikan status mahasiswa/semester (${mr.statusMahasiswa||'-'} / ${mr.statusSemester||'-'})`);
+  const recommendation=potential.startsWith('Tinggi')?`Pertahankan IPK, jaga agar tidak ada nilai di bawah B, dan selesaikan sisa ${gap} SKS sesuai rencana semester.`:(issues.length?issues.join('; ')+'.':'Pertahankan progres akademik dan monitor penyelesaian SKS.');
+  return{pred,mr,kota,dCount,eCount,potential,recommendation};
 }
 
 function metrics(){
@@ -354,56 +379,16 @@ function metrics(){
   const ids=new Set(ss.map(s=>s.nim));
   const ds=state.details.filter(d=>ids.has(d.nim));
   const by=ds.reduce((a,x)=>((a[x.nim]??=[]).push(x),a),{});
-
-  const topIPK=ss.filter(s=>Number.isFinite(+s.ipk)&&+s.ipk>0)
-    .slice().sort((a,b)=>b.ipk-a.ipk||a.name.localeCompare(b.name)||a.nim.localeCompare(b.nim));
-
-  const cum=ss.filter(s=>{
-    const a=by[s.nim]||[];
-    return a.length&&a.every(x=>['A','A-','B+','B'].includes(x.grade));
-  }).sort((a,b)=>b.ipk-a.ipk||a.name.localeCompare(b.name));
-
-  const under=ss.filter(s=>s.sks<CFG.TARGET_SKS)
-    .map(s=>({...s,gap:CFG.TARGET_SKS-s.sks}))
-    .sort((a,b)=>b.gap-a.gap||a.nim.localeCompare(b.nim));
-
-  const gradeList=g=>ss.filter(s=>(by[s.nim]||[]).some(x=>x.grade===g))
-    .map(s=>({...s,count:(by[s.nim]||[]).filter(x=>x.grade===g).length}))
-    .sort((a,b)=>b.count-a.count||a.nim.localeCompare(b.nim));
+  const topIPK=ss.filter(s=>Number.isFinite(+s.ipk)&&+s.ipk>0).slice().sort((a,b)=>b.ipk-a.ipk||a.name.localeCompare(b.name)||a.nim.localeCompare(b.nim));
+  const cum=ss.filter(s=>{const a=by[s.nim]||[];return +s.ipk>=3.51&&a.length&&a.every(x=>['A','A-','B+','B'].includes(x.grade));}).sort((a,b)=>b.ipk-a.ipk||a.name.localeCompare(b.name));
+  const gradeList=g=>ss.filter(s=>(by[s.nim]||[]).some(x=>x.grade===g)).map(s=>({...s,count:(by[s.nim]||[]).filter(x=>x.grade===g).length})).sort((a,b)=>b.count-a.count||a.nim.localeCompare(b.nim));
   const D=gradeList('D'),E=gradeList('E');
-
-  const mapped=new Set(state.mapping.map(m=>canonicalCourse(m.course)));
-  const underIds=new Set(under.map(s=>s.nim));
-  const unmappedRaw=ds.filter(d=>underIds.has(d.nim)&&(!mapped.size||!mapped.has(canonicalCourse(d.course))));
-  const um={};
-  unmappedRaw.forEach(d=>{
-    const k=canonicalCourse(d.course);
-    if(!um[k])um[k]={course:d.course.split('/')[0].trim(),students:new Set(),sks:new Set(),rows:[]};
-    um[k].students.add(d.nim);um[k].sks.add(d.sks);um[k].rows.push(d);
-  });
-  const unmapped=Object.values(um).map(x=>({...x,count:x.students.size,sksText:[...x.sks].sort().join(', ')}))
-    .sort((a,b)=>b.count-a.count||a.course.localeCompare(b.course));
-
-  const badRaw=ds.filter(d=>CFG.BAD_GRADES.includes(d.grade));
-  const bc={};
-  badRaw.forEach(d=>{
-    const k=canonicalCourse(d.course);
-    if(!bc[k])bc[k]={course:d.course.split('/')[0].trim(),rows:[],students:new Set(),D:new Set(),E:new Set()};
-    bc[k].rows.push(d);bc[k].students.add(d.nim);
-    if(d.grade==='D')bc[k].D.add(d.nim);
-    if(d.grade==='E')bc[k].E.add(d.nim);
-  });
-  const badCourses=Object.values(bc).map(x=>({
-    ...x,
-    count:x.students.size,
-    dCount:x.D.size,
-    eCount:x.E.size,
-    pct:ss.length?100*x.students.size/ss.length:0
-  })).sort((a,b)=>b.count-a.count||b.eCount-a.eCount||b.dCount-a.dCount||a.course.localeCompare(b.course));
-
-  const kota=kotaMonitoring(ss,ds);
-
-  return {ctx,ss,ds,topIPK,cum,under,D,E,unmapped,badCourses,kota,periodRows:ctx.masaRows||[]};
+  const badRaw=ds.filter(d=>CFG.BAD_GRADES.includes(d.grade)),bc={};
+  badRaw.forEach(d=>{const k=canonicalCourse(d.course);if(!bc[k])bc[k]={course:d.course.split('/')[0].trim(),rows:[],students:new Set(),D:new Set(),E:new Set()};bc[k].rows.push(d);bc[k].students.add(d.nim);if(d.grade==='D')bc[k].D.add(d.nim);if(d.grade==='E')bc[k].E.add(d.nim);});
+  const badCourses=Object.values(bc).map(x=>({...x,count:x.students.size,dCount:x.D.size,eCount:x.E.size,pct:ss.length?100*x.students.size/ss.length:0})).sort((a,b)=>b.count-a.count||b.eCount-a.eCount||b.dCount-a.dCount||a.course.localeCompare(b.course));
+  const kota2023=ss.filter(s=>KOTA_2023_YEARS.has(s.nim.slice(0,4))).map(s=>analyzeKota2023(s,by[s.nim]||[])).sort((a,b)=>(+b.complete)-(+a.complete)||b.missing.length-a.missing.length||b.gap-a.gap||a.nim.localeCompare(b.nim));
+  const kota2019=ss.filter(s=>{const y=+s.nim.slice(0,4);return y>0&&y<=2022;}).map(s=>analyzeKota2019(s,by[s.nim]||[])).sort((a,b)=>(+b.complete)-(+a.complete)||b.missing.length-a.missing.length||a.nim.localeCompare(b.nim));
+  return{ctx,ss,ds,topIPK,cum,D,E,badCourses,kota2023,kota2019};
 }
 function tableHTML(headers,rows,emptyText='Tidak ada data pada filter ini.'){
   if(!rows.length)return`<div class="empty">${esc(emptyText)}</div>`;
@@ -413,84 +398,64 @@ function render(){
   updateScopeUI();
   const m=metrics(),limit=CFG.TOP_LIMIT;
   $('#kpiStudents').textContent=m.ss.length;
-  $('#kpiPeriod').textContent=m.ctx.scope==='active'?(m.ctx.period?m.periodRows.length:'-'):'All';
   $('#kpiCumlaude').textContent=m.cum.length;
-  $('#kpiSks').textContent=m.under.length;
   $('#kpiD').textContent=m.D.length;
   $('#kpiE').textContent=m.E.length;
-  $('#kpiMap').textContent=m.unmapped.length;
   $('#kpiBadCourses').textContent=m.badCourses.length;
-
   const scopeText=m.ctx.scope==='active'?(m.ctx.period?`Aktif • ${m.ctx.period}`:'Aktif • pilih Periode'):'All';
   $('#filterMeta').textContent=`${scopeText} • ${m.ss.length} mahasiswa • sync ${state.lastSync?state.lastSync.toLocaleTimeString('id-ID'):'-'}`;
 
-  $('#topIpkTable').innerHTML=tableHTML(['Peringkat','NIM','Nama','IPK'],m.topIPK.slice(0,limit).map((s,i)=>`<tr><td><span class="badge b-blue">#${i+1}</span></td><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td></tr>`));
-  $('#cumlaudeTable').innerHTML=tableHTML(['NIM','Nama','IPK','Status'],m.cum.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td><td><span class="badge b-green">Min. B</span></td></tr>`));
-  $('#sksTable').innerHTML=tableHTML(['NIM','Nama','SKS','Kurang'],m.under.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${s.sks}</b></td><td><span class="badge b-amber">${s.gap} SKS</span></td></tr>`));
-  $('#eTable').innerHTML=tableHTML(['NIM','Nama','Jumlah E','IPK'],m.E.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="E">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${fmtIPK(s.ipk)}</td></tr>`));
-  $('#dTable').innerHTML=tableHTML(['NIM','Nama','Jumlah D','IPK'],m.D.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="D">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${fmtIPK(s.ipk)}</td></tr>`));
-
-  const periodEmpty=m.ctx.scope!=='active'?'Pilih Cakupan Data = Aktif untuk menggunakan filter MasaStudi.':(!m.ctx.period?'Pilih Periode / Posting terlebih dahulu.':'Tidak ada data MasaStudi pada periode ini.');
-  $('#periodTable').innerHTML=tableHTML(
-    ['NIM','Nama','Status Mhs','Status Semester','Semester','IPK','Masa Studi'],
-    m.periodRows.slice(0,limit).map(x=>`<tr><td><a class="nim" data-nim="${esc(x.nim)}" data-grade="ALL">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><span class="badge b-blue">${esc(x.statusMahasiswa||'-')}</span></td><td>${esc(x.statusSemester||'-')}</td><td>${x.semester||'-'}</td><td>${fmtIPK(x.ipk)}</td><td>${esc(x.masaStudi||'-')}</td></tr>`),
-    periodEmpty
-  );
-
-  $('#badCoursesTable').innerHTML=tableHTML(
-    ['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],
-    m.badCourses.slice(0,limit).map(x=>`<tr><td><a class="nim" data-bad-course="${esc(canonicalCourse(x.course))}">${esc(x.course)}</a></td><td><b>${x.count}</b></td><td><span class="badge b-red">${x.dCount}</span></td><td><span class="badge b-red">${x.eCount}</span></td><td>${x.pct.toFixed(1)}%</td></tr>`)
-  );
-
-  $('#mappingTable').innerHTML=tableHTML(['Mata Kuliah','SKS','Mahasiswa Terdampak','Status'],m.unmapped.slice(0,limit).map(x=>`<tr><td><a class="nim" data-course="${esc(canonicalCourse(x.course))}">${esc(x.course)}</a></td><td>${esc(x.sksText)}</td><td><b>${x.count}</b></td><td><span class="badge b-amber">Belum Mapping</span></td></tr>`));
-
-  $('#kotaTable').innerHTML=tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi'],m.kota.slice(0,limit).map(x=>`<tr><td><a class="nim" data-kota-nim="${esc(x.nim)}">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota} / ${KOTA_TARGET_SKS}</b></td><td>${x.gap>0?`<span class="badge b-amber">${x.gap} SKS</span>`:'<span class="badge b-green">0 SKS</span>'}</td><td>${x.missing.length?`<span class="badge b-red">${esc(kotaMissingText(x))}</span>`:'<span class="badge b-green">Semua rumpun lengkap</span>'}</td></tr>`),'Semua mahasiswa NIM 2023–2026 pada filter ini sudah memenuhi persyaratan SKS KOTA.');
+  const f23=$('#kota2023Filter')?.value||'all', f19=$('#kota2019Filter')?.value||'all';
+  const k23=f23==='complete'?m.kota2023.filter(x=>x.complete):m.kota2023;
+  const k19=f19==='complete'?m.kota2019.filter(x=>x.complete):m.kota2019;
+  $('#kota2023Table').innerHTML=tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi','Status'],k23.slice(0,limit).map(x=>`<tr><td><a class="nim" data-nim="${esc(x.nim)}" data-grade="ALL">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota} / ${KOTA_TARGET_SKS}</b></td><td>${x.gap?`<span class="badge b-amber">${x.gap} SKS</span>`:'-'}</td><td>${x.missing.length?esc(kotaMissingText(x)):'-'}</td><td>${x.complete?'<span class="badge b-green">Lengkap KOTA</span>':'<span class="badge b-red">Belum Lengkap</span>'}</td></tr>`),'Tidak ada mahasiswa Kur 2023 pada filter ini.');
+  $('#kota2019Table').innerHTML=tableHTML(['NIM','Nama','SKS KOTA','Rumpun','Rumpun Belum Terpenuhi','Status'],k19.slice(0,limit).map(x=>`<tr><td><a class="nim" data-nim="${esc(x.nim)}" data-grade="ALL">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota}</b></td><td>${5-x.missing.length}/5</td><td>${x.missing.length?esc(kotaMissingText(x)):'-'}</td><td>${x.complete?'<span class="badge b-green">Lengkap KOTA</span>':'<span class="badge b-red">Belum Lengkap</span>'}</td></tr>`),'Tidak ada mahasiswa Kur 2019 pada filter ini.');
+  $('#topIpkTable').innerHTML=tableHTML(['Peringkat','NIM','Nama','IPK','Predikat'],m.topIPK.slice(0,limit).map((s,i)=>`<tr><td><span class="badge b-blue">#${i+1}</span></td><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td><td>${esc(graduationPredicate(s.ipk))}</td></tr>`));
+  $('#cumlaudeTable').innerHTML=tableHTML(['NIM','Nama','IPK','Status'],m.cum.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td><td><span class="badge b-green">Cum Laude + Min. B</span></td></tr>`));
+  $('#eTable').innerHTML=tableHTML(['NIM','Nama','Jumlah E','IPK'],m.E.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${fmtIPK(s.ipk)}</td></tr>`));
+  $('#dTable').innerHTML=tableHTML(['NIM','Nama','Jumlah D','IPK'],m.D.slice(0,limit).map(s=>`<tr><td><a class="nim" data-nim="${esc(s.nim)}" data-grade="ALL">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><span class="badge b-red">${s.count}</span></td><td>${fmtIPK(s.ipk)}</td></tr>`));
+  $('#badCoursesTable').innerHTML=tableHTML(['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],m.badCourses.slice(0,limit).map(x=>`<tr><td><a class="nim" data-bad-course="${esc(canonicalCourse(x.course))}">${esc(x.course)}</a></td><td><b>${x.count}</b></td><td><span class="badge b-red">${x.dCount}</span></td><td><span class="badge b-red">${x.eCount}</span></td><td>${x.pct.toFixed(1)}%</td></tr>`));
   bindDrill();
 }
 function bindDrill(){
   document.querySelectorAll('[data-nim]').forEach(a=>a.onclick=()=>showTranscript(a.dataset.nim,a.dataset.grade||'ALL'));
-  document.querySelectorAll('[data-course]').forEach(a=>a.onclick=()=>showCourse(a.dataset.course));
   document.querySelectorAll('[data-bad-course]').forEach(a=>a.onclick=()=>showBadCourse(a.dataset.badCourse));
-  document.querySelectorAll('[data-kota-nim]').forEach(a=>a.onclick=()=>showKotaTranscript(a.dataset.kotaNim));
 }
 function showModal(title,html){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modal').classList.add('show');}
 function showTranscript(nim,grade='ALL'){
-  const s=state.students.find(x=>x.nim===nim);
-  const mr=state.masa.find(x=>x.nim===nim&&($('#periodFilter').value?x.posting===$('#periodFilter').value:true));
+  const s=state.students.find(x=>x.nim===String(nim));
+  const insight=academicInsight(nim),mr=insight.mr,kota=insight.kota;
   const base=s||{nim,name:mr?.name||'',sks:0,ipk:mr?.ipk||0};
-  let ds=detailsFor(nim).sort((a,b)=>a.no-b.no);
+  let ds=detailsFor(nim).slice().sort((a,b)=>a.no-b.no);
+  const counted=new Set(kota?.countedRows||[]);
   if(grade!=='ALL')ds=ds.filter(x=>x.grade===grade);
+  const kotaText=kota?(kota.curriculum==='2023'?`${kota.complete?'Lengkap':'Belum Lengkap'} • ${kota.sksKota}/${KOTA_TARGET_SKS} SKS • rumpun kurang: ${kota.missing.length}`:`${kota.complete?'Lengkap':'Belum Lengkap'} • ${5-kota.missing.length}/5 rumpun`):'-';
   const meta=`<div class="detailmeta">
-    <span class="pill"><b>NIM:</b> ${esc(base.nim)}</span>
-    <span class="pill"><b>Nama:</b> ${esc(base.name)}</span>
-    <span class="pill"><b>SKS:</b> ${base.sks||0}</span>
-    <span class="pill"><b>IPK:</b> ${fmtIPK(base.ipk)}</span>
-    ${mr?`<span class="pill"><b>Status:</b> ${esc(mr.statusMahasiswa||'-')}</span><span class="pill"><b>Semester:</b> ${mr.semester||'-'}</span>`:''}
-    ${grade!=='ALL'?`<span class="pill"><b>Filter Nilai:</b> ${esc(grade)}</span>`:''}
-  </div>`;
-  const rows=ds.map(x=>`<tr><td>${x.no||''}</td><td>${esc(x.course)}</td><td>${x.sks}</td><td><span class="grade ${esc(x.grade)}">${esc(x.grade)}</span></td></tr>`);
-  showModal(`Detail Transkrip — ${base.name||nim}`,meta+tableHTML(['No','Mata Kuliah','SKS','Nilai'],rows,'Detail transkrip belum tersedia di sheet Detilnilai.'));
+    <span class="pill"><b>NIM:</b> ${esc(base.nim)}</span><span class="pill"><b>Nama:</b> ${esc(base.name)}</span><span class="pill"><b>SKS:</b> ${base.sks||0}/${CFG.TARGET_SKS}</span><span class="pill"><b>IPK:</b> ${fmtIPK(base.ipk)}</span><span class="pill"><b>Predikat:</b> ${esc(insight.pred)}</span>
+    ${mr?`<span class="pill"><b>Status:</b> ${esc(mr.statusMahasiswa||'-')}</span><span class="pill"><b>Semester:</b> ${mr.semester||'-'}</span><span class="pill"><b>Masa Studi:</b> ${esc(mr.masaStudi||'-')}</span>`:''}
+    <span class="pill"><b>KOTA:</b> ${esc(kotaText)}</span><span class="pill"><b>D/E:</b> ${insight.dCount} D / ${insight.eCount} E</span>
+  </div>
+  <div class="insight"><strong>Potensi Kelulusan:</strong> ${esc(insight.potential)}<br><strong>Rekomendasi Akademik:</strong> ${esc(insight.recommendation)}</div>
+  <div class="footnote" style="margin-bottom:10px;border:1px solid var(--line);border-radius:8px">Mata kuliah KOTA ditampilkan <b>huruf tebal</b> dan diberi label KOTA. Potensi kelulusan bersifat indikator rule-based, bukan jaminan kelulusan.</div>`;
+  const rows=ds.map(x=>{const isKota=counted.has(x);return`<tr><td>${x.no||''}</td><td>${esc(x.code||'-')}</td><td>${isKota?`<b>${esc(x.course)}</b>`:esc(x.course)} ${isKota?'<span class="badge b-blue">KOTA</span>':''}</td><td>${x.sks}</td><td><span class="grade ${esc(x.grade)}">${esc(x.grade)}</span></td></tr>`;});
+  showModal(`Detail Transkrip — ${base.name||nim}`,meta+tableHTML(['No','Kode','Mata Kuliah','SKS','Nilai'],rows,'Detail transkrip belum tersedia di sheet DetilNilai.'));
 }
 function showList(type){
   const m=metrics();
-  if(type==='topipk'){
-    showModal('Daftar Mahasiswa dengan IPK Tertinggi',tableHTML(['Peringkat','NIM','Nama','IPK'],m.topIPK.map((s,i)=>`<tr><td><b>#${i+1}</b></td><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td></tr>`)));
+  if(type==='kota2023'){
+    const f=$('#kota2023Filter')?.value||'all',arr=f==='complete'?m.kota2023.filter(x=>x.complete):m.kota2023;
+    showModal('Pengecekan Mahasiswa Kur 2023',tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi','Status'],arr.map(x=>`<tr><td><a class="nim" onclick="showTranscript('${esc(x.nim)}','ALL')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td>${x.sksKota}/${KOTA_TARGET_SKS}</td><td>${x.gap} SKS</td><td>${esc(kotaMissingText(x))}</td><td>${x.complete?'Lengkap KOTA':'Belum Lengkap'}</td></tr>`)));
+  }else if(type==='kota2019'){
+    const f=$('#kota2019Filter')?.value||'all',arr=f==='complete'?m.kota2019.filter(x=>x.complete):m.kota2019;
+    showModal('Pengecekan Mahasiswa Kur 2019',tableHTML(['NIM','Nama','SKS KOTA','Rumpun','Rumpun Belum Terpenuhi','Status'],arr.map(x=>`<tr><td><a class="nim" onclick="showTranscript('${esc(x.nim)}','ALL')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td>${x.sksKota}</td><td>${5-x.missing.length}/5</td><td>${esc(kotaMissingText(x))}</td><td>${x.complete?'Lengkap KOTA':'Belum Lengkap'}</td></tr>`)));
+  }else if(type==='topipk'){
+    showModal('Daftar Mahasiswa dengan IPK Tertinggi',tableHTML(['Peringkat','NIM','Nama','IPK','Predikat'],m.topIPK.map((s,i)=>`<tr><td><b>#${i+1}</b></td><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td><b>${fmtIPK(s.ipk)}</b></td><td>${esc(graduationPredicate(s.ipk))}</td></tr>`)));
   }else if(type==='cumlaude'){
-    showModal('Semua Kandidat Cumlaude',tableHTML(['NIM','Nama','IPK','Status'],m.cum.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${fmtIPK(s.ipk)}</td><td><span class="badge b-green">Min. B</span></td></tr>`)));
-  }else if(type==='sks'){
-    showModal('Semua Mahasiswa Kurang dari 144 SKS',tableHTML(['NIM','Nama','SKS','Kekurangan'],m.under.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.sks}</td><td>${s.gap}</td></tr>`)));
+    showModal('Daftar Mahasiswa Cumlaude',tableHTML(['NIM','Nama','IPK','Status'],m.cum.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${fmtIPK(s.ipk)}</td><td><span class="badge b-green">IPK ≥ 3.51 + Min. B</span></td></tr>`)));
   }else if(type==='D'||type==='E'){
-    const arr=type==='D'?m.D:m.E;
-    showModal(`Semua Mahasiswa dengan Nilai ${type}`,tableHTML(['NIM','Nama',`Jumlah ${type}`,'IPK'],arr.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','${type}')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.count}</td><td>${fmtIPK(s.ipk)}</td></tr>`)));
-  }else if(type==='mapping'){
-    showModal('Semua Mata Kuliah Belum Mapping',tableHTML(['Mata Kuliah','SKS','Mahasiswa Terdampak','Status'],m.unmapped.map(x=>`<tr><td><a class="nim" onclick="showCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${esc(x.sksText)}</td><td>${x.count}</td><td><span class="badge b-amber">Belum Mapping</span></td></tr>`)));
-  }else if(type==='period'){
-    const msg=m.ctx.scope!=='active'?'Pilih Cakupan Data = Aktif terlebih dahulu.':(!m.ctx.period?'Pilih Periode / Posting terlebih dahulu.':'Tidak ada data.');
-    showModal('Semua Mahasiswa Periode Terpilih',tableHTML(['NIM','Nama','Status Mhs','Status Semester','Semester','IPK','Masa Studi'],m.periodRows.map(x=>`<tr><td><a class="nim" onclick="showTranscript('${esc(x.nim)}','ALL')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td>${esc(x.statusMahasiswa||'-')}</td><td>${esc(x.statusSemester||'-')}</td><td>${x.semester||'-'}</td><td>${fmtIPK(x.ipk)}</td><td>${esc(x.masaStudi||'-')}</td></tr>`),msg));
+    const arr=type==='D'?m.D:m.E;showModal(`Daftar Mahasiswa dengan Nilai ${type}`,tableHTML(['NIM','Nama',`Jumlah ${type}`,'IPK'],arr.map(s=>`<tr><td><a class="nim" onclick="showTranscript('${esc(s.nim)}','ALL')">${esc(s.nim)}</a></td><td>${esc(s.name)}</td><td>${s.count}</td><td>${fmtIPK(s.ipk)}</td></tr>`)));
   }else if(type==='badcourses'){
-    showModal('Semua Mata Kuliah dengan Nilai D/E',tableHTML(['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],m.badCourses.map(x=>`<tr><td><a class="nim" onclick="showBadCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${x.count}</td><td>${x.dCount}</td><td>${x.eCount}</td><td>${x.pct.toFixed(1)}%</td></tr>`)));
-  }else if(type==='kota'){
-    showModal('Semua Ketidaklengkapan SKS KOTA',tableHTML(['NIM','Nama','SKS KOTA','Kekurangan','Rumpun Belum Terpenuhi'],m.kota.map(x=>`<tr><td><a class="nim" onclick="showKotaTranscript('${esc(x.nim)}')">${esc(x.nim)}</a></td><td>${esc(x.name)}</td><td><b>${x.sksKota} / ${KOTA_TARGET_SKS}</b></td><td>${x.gap} SKS</td><td>${esc(kotaMissingText(x))}</td></tr>`),'Semua mahasiswa NIM 2023–2026 pada filter ini sudah memenuhi persyaratan SKS KOTA.'));
+    showModal('Daftar Mata Kuliah dengan Nilai Jelek Terbanyak',tableHTML(['Mata Kuliah','Mhs D/E','D','E','% Terdampak'],m.badCourses.map(x=>`<tr><td><a class="nim" onclick="showBadCourse('${esc(canonicalCourse(x.course))}')">${esc(x.course)}</a></td><td>${x.count}</td><td>${x.dCount}</td><td>${x.eCount}</td><td>${x.pct.toFixed(1)}%</td></tr>`)));
   }
 }
 function showCourse(key){
@@ -514,6 +479,8 @@ $('#scopeFilter').addEventListener('change',()=>{updateScopeUI();render();});
 $('#periodFilter').addEventListener('change',()=>{updateScopeUI();render();});
 $('#yearFilter').addEventListener('change',render);
 $('#nimFilter').addEventListener('input',render);
+$('#kota2023Filter').addEventListener('change',render);
+$('#kota2019Filter').addEventListener('change',render);
 $('#syncBtn').onclick=loadData;
 $('#openSheetBtn').onclick=()=>window.open(CFG.GOOGLE_SHEET_URL,'_blank');
 document.querySelectorAll('[data-list]').forEach(b=>b.onclick=()=>showList(b.dataset.list));
@@ -528,3 +495,4 @@ setInterval(()=>{if(document.visibilityState==='visible')loadData();},CFG.AUTO_S
 </script>
 </body>
 </html>
+
