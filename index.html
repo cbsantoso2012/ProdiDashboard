@@ -297,7 +297,7 @@ function kota19Rumpun(d){
 function analyzeKota2023(s,ds){
   const rumpunRows={};Object.keys(KOTA23_RUMPUN).forEach(k=>rumpunRows[k]=[]);
   const freeRows=[];
-  ds.forEach(d=>{const code=String(d.code||'').trim().toUpperCase();if(!code)return;const r=kota23Rumpun(code);if(r)rumpunRows[r].push(d);else if(!code.startsWith('SIF'))freeRows.push(d);});
+  ds.forEach(d=>{const code=String(d.code||'').trim().toUpperCase();if(!code)return;const r=kota23Rumpun(code);if(r)rumpunRows[r].push(d);else if(['AKT','ARS','MAN','TSI','INF','DP','DKV','KOM','PSI'].some(prefix=>code.startsWith(prefix)))freeRows.push(d);});
   const rumpunStatus={};let sksRumpun=0;
   Object.keys(KOTA23_RUMPUN).forEach(k=>{const rows=rumpunRows[k],sks=rows.reduce((a,x)=>a+(+x.sks||0),0);sksRumpun+=sks;rumpunStatus[k]={...KOTA23_RUMPUN[k],fulfilled:rows.length>0,sks,rows};});
   const missing=Object.keys(rumpunStatus).filter(k=>!rumpunStatus[k].fulfilled);
@@ -495,4 +495,5 @@ setInterval(()=>{if(document.visibilityState==='visible')loadData();},CFG.AUTO_S
 </script>
 </body>
 </html>
+
 
